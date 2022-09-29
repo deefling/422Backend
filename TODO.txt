@@ -1,5 +1,5 @@
 Decide on project approach if needed (scrum/agile/etc...)
-Decide on hosting service (Firebase/Cyclic)
+Decide on hosting service (Firebase/Cyclic/Railway)
 Decide on technologies/languages
     make sure all compatible w/ hosting service
 
