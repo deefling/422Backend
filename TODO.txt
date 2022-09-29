@@ -7,4 +7,9 @@ Presentations on Wednesday
     Tell prof the technologies
     Talk about decision making process
     frontend/backend separate presentations 
-    
+    5 min minimum per team
+
+Technology suggestions
+Front = React
+Back =  Node/Express
+DB=MongoDb
