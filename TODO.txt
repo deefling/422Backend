@@ -1,15 +1,25 @@
-Decide on project approach if needed (scrum/agile/etc...)
-Decide on hosting service (Firebase/Cyclic/Railway)
-Decide on technologies/languages
-    make sure all compatible w/ hosting service
+Frontend:
+    Look at web templates for design (?)
 
-Presentations on Wednesday
-    Tell prof the technologies
-    Talk about decision making process
-    frontend/backend separate presentations 
-    5 min minimum per team
+Backend:
+    Set up (& learn) MongoDB
 
-Technology suggestions
-Front = React
-Back =  Node/Express
-DB=MongoDb
+General TODO:
+    Set up Cyclic account
+    Sync Cyclic to Github repo
+    Agree on standards of API calls and returns [CRUD]
+    Agree on standards of database format
+
+
+Notes:
+    
+Frontend:
+    React
+
+Backend:
+    Node:
+        express.js
+        mongodb wrapper package
+        nodemon dependency - type "npm run dev" for faster node workflow
+        dependencies are installed locally to the project folder, you shouldn't need to install anything
+    MongoDB
