@@ -12,7 +12,7 @@ server.listen(3000, function() {
     })
 
     server.get('/endpoint', (req, res) => {
-        res.send('This is the template for a READ operation');
+        res.send('This is the template for a TEST operation');
     })
 
     server.put('/endpoint', (req, res) => {
