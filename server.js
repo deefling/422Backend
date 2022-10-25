@@ -19,6 +19,30 @@ function api() {
         res.send('This is the template for a READ operation');
     })
 
+    server.get('/getLogins', (req, res) => {
+        JSONstring = `[
+            {
+            id: 1, 
+            email: test@gmail.com,
+            password: 983759345736jlhrbf38374
+            }
+            {
+                id: 2, 
+                email: fake@gmail.com,
+                password: 43g6gh6iu45y64h6iu
+            }
+            {
+                id: 3, 
+                email: random@gmail.com,
+                password: hj4g6j6g878g6jh8g23lk45
+            }
+        ]`;
+        res.json(JSONstring);
+    })
+
+
+
+
     server.put('/endpoint', (req, res) => {
         //can be triggered by HTML form or JS AJAX/JS fetch
         //form action attribute will be the endpoint in params
