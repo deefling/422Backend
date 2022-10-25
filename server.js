@@ -20,24 +20,25 @@ function api() {
     })
 
     server.get('/getLogins', (req, res) => {
-        JSONstring = `[
+        // HARDCODED
+        JSONobj = {stuff: [
             {
-            id: 1, 
-            email: test@gmail.com,
-            password: 983759345736jlhrbf38374
-            }
+            id: "1", 
+            email: "test@gmail.com",
+            password: "983759345736jlhrbf38374"
+            },
             {
-                id: 2, 
-                email: fake@gmail.com,
-                password: 43g6gh6iu45y64h6iu
-            }
+                id: "2", 
+                email: "fake@gmail.com",
+                password: "43g6gh6iu45y64h6iu"
+            },
             {
-                id: 3, 
-                email: random@gmail.com,
-                password: hj4g6j6g878g6jh8g23lk45
+                id: "3", 
+                email: "random@gmail.com",
+                password: "hj4g6j6g878g6jh8g23lk45"
             }
-        ]`;
-        res.json(JSONstring);
+        ]};
+        res.json(JSONobj);
     })
 
 
