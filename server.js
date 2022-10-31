@@ -89,7 +89,7 @@ function api() {
     })
 
     server.get('/getCarDisplay/:id', (req, res) => { 
-        var id = req.params.id;
+        var id = req.params.id - 1;
 
         var carDisplay = {
             car_name: CarJSONobj.cars[id].car_name,
