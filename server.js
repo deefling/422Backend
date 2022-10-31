@@ -2,6 +2,11 @@ const express = require('express');
 const server = express();
 
 const mongoDriver = require('./mongoDriver');
+const cors = require('cors');
+
+server.use(cors({
+    origin: '*'
+}));
 
 const CarJSONobj = {cars: [
     {
