@@ -6,52 +6,67 @@ const mongoDriver = require('./mongoDriver');
 const CarJSONobj = {cars: [
     {
         id: "1", 
-        image: "LINK",
         car_name: {
             model: "Civic",
             brand: "Honda",
             year: "1997"
-        }
+        },
+        category: "compact car",
+        main_image: "/images/civicMain.jpg",
+        header_image: "/images/civicHeader.jpg",
+        description: "bla bla bla"
     },
     {
         id: "2", 
-        image: "LINK",
         car_name: {
             model: "Cybertruck",
             brand: "Tesla",
-            year: "2023"
-        }
+            year: "2023" 
+        },
+        category: "truck",
+        main_image: "/images/cybertruckMain.jpg",
+        header_image: "/images/cybertruckHeader.jpg",
+        description: "bla bla bla"
     },
     {
         id: "3", 
-        image: "LINK",
         car_name: {
             model: "P1",
             brand: "McLaren",
             year: "2013"
-        }
+        },
+        category: "sports car",
+        main_image: "/images/p1Main.jpg",
+        header_image: "/images/p1Header.jpg",
+        description: "bla bla bla"
     },
     {
         id: "4", 
-        image: "LINK",
         car_name: {
             model: "Silver Ghost",
             brand: "Rolls Royce",
             year: "1925"
-        }
+        },
+        category: "luxury car",
+        main_image: "/images/silverGhostMain.jpg",
+        header_image: "/images/silverGhostHeader.jpg",
+        description: "bla bla bla"
     },
     {
         id: "5", 
-        image: "LINK",
         car_name: {
             model: "Aventador",
             brand: "Lamborghini",
             year: "2018"
-        }
+        },
+        category: "sports car",
+        main_image: "/images/aventadorMain.jpg",
+        header_image: "/images/aventadorHead.jpg",
+        description: "bla bla bla"
     }
 ]};
 
-
+server.use('/images', express.static('images'));
 server.listen(3000, api());
     
 function api() {
@@ -68,15 +83,33 @@ function api() {
         res.send('This is the template for a READ operation');
     })
 
+    server.get('/getCarDisplay/:id', (req, res) => { 
+        var id = req.params.id;
+
+        var carDisplay = {
+            car_name: CarJSONobj.cars[id].car_name,
+            category: CarJSONobj.cars[id].category,
+            main_image: CarJSONobj.cars[id].main_image,
+            header_image: CarJSONobj.cars[id].header_image,
+            description: CarJSONobj.cars[id].description
+        }
+
+        res.json(carDisplay);
+    })
+
     server.get('/getCars', (req, res) => { 
-        res.json(CarJSONobj);
+        var listCars = {cars:[]};
+        CarJSONobj['cars'].forEach((item) => {
+            listCars['cars'].push({carID: item['id']});
+        })
+        res.json(listCars);
     })
 
     server.get('/getFeaturedCars', (req, res) => {
         var featuredCars = {cars:[]};
-        featuredCars['cars'].push(CarJSONobj['cars'][1]);
-        featuredCars['cars'].push(CarJSONobj['cars'][0]);
-        featuredCars['cars'].push(CarJSONobj['cars'][4]);
+        featuredCars['cars'].push({carID: CarJSONobj['cars'][1]['id']});
+        featuredCars['cars'].push({carID: CarJSONobj['cars'][0]['id']});
+        featuredCars['cars'].push({carID: CarJSONobj['cars'][4]['id']});
         res.json(featuredCars);
     })
 
