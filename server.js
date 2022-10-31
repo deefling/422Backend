@@ -51,7 +51,7 @@ const CarJSONobj = {cars: [
     }
 ]};
 
-
+server.use(express.static('images'));
 server.listen(3000, api());
     
 function api() {

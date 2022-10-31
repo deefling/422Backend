@@ -8,7 +8,7 @@
 // });
 
 
-fetch('http://localhost:3000/images/akaza.png')
+fetch('localhost:3000/akaza.png')
   .then(res=>{return res.blob()})
   .then(blob=>{
     var img = URL.createObjectURL(blob);
