@@ -4,7 +4,8 @@ run();
 
 async function run(){
     await mongoDriver.resetDatabase();
-    
+
+    //fill brand table with 
     await mongoDriver.addBrand("Mercedes");
     await mongoDriver.addBrand("BMW");
     await mongoDriver.addBrand("Range Rover");
@@ -14,5 +15,4 @@ async function run(){
     await mongoDriver.addBrand("McLaren");
     await mongoDriver.addBrand("Ferarri");
     await mongoDriver.addBrand("Bentley");
-
 }

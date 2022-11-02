@@ -7,12 +7,7 @@ const MONGO_CONNECTION_STRING = "mongodb+srv://root:TargaryensFTW@422databse.axy
 const uri = MONGO_CONNECTION_STRING;
 const client = new MongoClient(uri);
 
-
-//it was advised (need to find source) that we open the db connection before actually listening on any ports
-// that may require a class which doesn't work with current architecture. need to research this more.
-
-
-//this method pulls from sample data on the db
+//this method pulls from sample data on the db to display info
 exports.bootDB = async function(){
     try{
         await client.connect();
@@ -33,15 +28,12 @@ exports.bootDB = async function(){
     }
 }
 
+//clears the database for the purpose of a fresh batch of data
 exports.resetDatabase = async function(){
     try{
         await client.connect();
-        //identify db name (probably will always be the same for our purposes)
         const db = client.db("sample_cars");
-
         await db.collection("brand").deleteMany();
-        await db.collection("counters").deleteMany();
-
     } catch (e) {
         console.error(e);
     } finally {
@@ -52,21 +44,17 @@ exports.resetDatabase = async function(){
 exports.addBrand = async function(name){
     try{
         await client.connect();
-        //identify db name (probably will always be the same for our purposes)
         const db = client.db("sample_cars");
-        //identify collection name (like MySQL table)
         const collection = db.collection('brand');
-
         var doc = {};
-        console.log(await collection.countDocuments());
 
         if(await collection.countDocuments() == 0){
             doc = {brand_id: 0, brand_name: name};
         } else {
             const query = {};
             const options = {
-                // sort matched documents in descending order by rating
-                sort: { "brand_id": 1 }
+                //sort by brand_id -> descending
+                sort: { "brand_id": -1 }
             };
             latestRecord = await collection.findOne(query, options);
             id = latestRecord.brand_id + 1;
@@ -80,16 +68,3 @@ exports.addBrand = async function(name){
         await client.close();
     }
 }
-
-
-
-
-//figure out how to use any of this as template for pulling needed data out
-// app.get("/items/:my_item", async (req, res) => {  -- line in main server class
-//     let my_item = req.params.my_item;
-//     let item = await client.db("my_db")
-//                 .collection("my_collection")
-//                 .findOne({my_item: my_item})
-
-//     return res.json(item)   -- is converting a cursor as easy as res.json()?
-// })

@@ -1,13 +1,19 @@
 const express = require('express');
 const server = express();
 
-const mongoDriver = require('./mongoDriver');
+//allow cross-origin requests
 const cors = require('cors');
-
 server.use(cors({
     origin: '*'
 }));
 
+//allow API users to access images directory
+server.use('/images', express.static('images'));
+
+//Custom driver for our DB
+const mongoDriver = require('./mongoDriver');
+
+//Temporary values until DB is set up
 const CarJSONobj = {cars: [
     {
         id: "1", 
@@ -71,23 +77,32 @@ const CarJSONobj = {cars: [
     }
 ]};
 
-server.use('/images', express.static('images'));
+//activation of "main" method
 server.listen(3000, api());
-    
+
+//"main" method
 function api() {
     console.log('API has been booted up');
-    mongoDriver.bootDB();
 
+    ///TEMPLATES///
     server.post('/endpoint', (req, res) => {
-        //can be triggered by HTML form or JS AJAX/JS fetch
-        //form action attribute will be the endpoint in params
         console.log('This is the template for a CREATE operation');
     })
-
     server.get('/endpoint', (req, res) => {
         res.send('This is the template for a READ operation');
     })
+    server.put('/endpoint', (req, res) => {
+        console.log('This is the template for an UPDATE operation');
+    })
+    server.delete('/endpoint', (req, res) => {
+        console.log('This is the template for an DELETE operation');
+    })
 
+
+
+    ///API CALLS///
+
+    ///CAR INFO///
     server.get('/getCarDisplay/:id', (req, res) => { 
         var id = req.params.id - 1;
 
@@ -118,9 +133,12 @@ function api() {
         res.json(featuredCars);
     })
 
+
+
+    ///USER INFO///
     server.get('/getLogins', (req, res) => {
         // HARDCODED
-        //I plan to change this to take login creds & return bool rather than exposing passwords
+        //I plan to change this to take login creds & return bool rather than exposing passwords on client side
         JSONobj = {stuff: [
             {
             id: "1", 
@@ -140,20 +158,4 @@ function api() {
         ]};
         res.json(JSONobj);
     })
-
-
-
-
-    server.put('/endpoint', (req, res) => {
-        //can be triggered by HTML form or JS AJAX/JS fetch
-        //form action attribute will be the endpoint in params
-        console.log('This is the template for an UPDATE operation');
-    })
-
-    server.delete('/endpoint', (req, res) => {
-        //can be triggered by HTML form or JS AJAX/JS fetch
-        //form action attribute will be the endpoint in params
-        console.log('This is the template for an DELETE operation');
-    })
-
 }
