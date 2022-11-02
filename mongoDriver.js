@@ -17,15 +17,63 @@ exports.bootDB = async function(){
     try{
         await client.connect();
         //identify db name (probably will always be the same for our purposes)
-        const db = client.db("sample_training");
+        const db = client.db("sample_guides");
         //identify collection name (like MySQL table)
-        const collection = db.collection('grades');
+        const collection = db.collection('planets');
         //collection.find returns a cursor
         //need to figure out how to read this into a JSON
         // & how to export that JSON out the API
         //also need to spend time learning how to pull the exact data we want - efficiency will be important
         const findResult = await collection.find({}).toArray();
         console.log('Found documents =>', findResult);
+    } catch (e) {
+    console.error(e);
+    } finally {
+        await client.close();
+    }
+}
+
+exports.resetDatabase = async function(){
+    try{
+        await client.connect();
+        //identify db name (probably will always be the same for our purposes)
+        const db = client.db("sample_cars");
+
+        await db.collection("brand").deleteMany();
+        await db.collection("counters").deleteMany();
+
+    } catch (e) {
+        console.error(e);
+    } finally {
+        await client.close();
+    }
+}
+
+exports.addBrand = async function(name){
+    try{
+        await client.connect();
+        //identify db name (probably will always be the same for our purposes)
+        const db = client.db("sample_cars");
+        //identify collection name (like MySQL table)
+        const collection = db.collection('brand');
+
+        var doc = {};
+        console.log(await collection.countDocuments());
+
+        if(await collection.countDocuments() == 0){
+            doc = {brand_id: 0, brand_name: name};
+        } else {
+            const query = {};
+            const options = {
+                // sort matched documents in descending order by rating
+                sort: { "brand_id": 1 }
+            };
+            latestRecord = await collection.findOne(query, options);
+            id = latestRecord.brand_id + 1;
+            doc = {brand_id: id, brand_name: name};
+        }
+
+        await collection.insertOne(doc);
     } catch (e) {
     console.error(e);
     } finally {
