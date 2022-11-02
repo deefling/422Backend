@@ -112,9 +112,9 @@ function api() {
 
     server.get('/getFeaturedCars', (req, res) => {
         var featuredCars = {cars:[]};
-        featuredCars['cars'].push({carID: CarJSONobj['cars'][1]['id']});
+        featuredCars['cars'].push({carID: CarJSONobj['cars'][3]['id']});
+        featuredCars['cars'].push({carID: CarJSONobj['cars'][2]['id']});
         featuredCars['cars'].push({carID: CarJSONobj['cars'][0]['id']});
-        featuredCars['cars'].push({carID: CarJSONobj['cars'][4]['id']});
         res.json(featuredCars);
     })
 
