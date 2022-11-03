@@ -26,7 +26,7 @@ exports.bootDB = async function(){
         const findResult = await collection.find({}).toArray();
         console.log('Found documents =>', findResult);
     } catch (e) {
-    console.error(e);
+        console.error(e);
     } finally {
         await client.close();
     }
@@ -47,16 +47,51 @@ exports.resetDatabase = async function(){
     }
 }
 
-exports.addBrand = async function(name){
+
+
+///CAR ADD OPERATIONS///
+/* REMAINING
+* model_year
+    model_year_id
+    model_id (FK)
+    year
+    main_image
+    header_image
+    description
+    featured (bool)
+    quantity
+* package
+    package_id
+    model_year_id (FK)
+    package_name
+    base_price
+* package_detail
+    package_id (FK)
+    part_id
+* part
+    part_id
+    part_type_id (FK)
+    part_name
+    part_price
+* part_allowed
+    part_id (FK)
+    model_year_id (FK)
+* part_type
+    part_type_id
+    part_type_name
+
+*/
+exports.addBrand = async function(name){//good example to copy & paste for simple tables
     try{
         await client.connect();
-        const db = client.db("sample_cars");
-        const collection = db.collection('brand');
-        var doc = {};
+        const db = client.db("sample_cars"); //select database
+        const collection = db.collection('brand'); //select collection (table)
+        var doc = {}; //empty document to insert (will be modified)
 
-        if(await collection.countDocuments() == 0){
-            doc = {brand_id: 0, brand_name: name};
-        } else {
+        if(await collection.countDocuments() == 0){ //check if collection empty
+            doc = {brand_id: 0, brand_name: name}; //start at index 0
+        } else { //not empty
+            //query DB to find last record & imcrement index from there
             const query = {};
             const options = {
                 //sort by brand_id -> descending
@@ -67,6 +102,7 @@ exports.addBrand = async function(name){
             doc = {brand_id: id, brand_name: name};
         }
 
+        //insert document
         await collection.insertOne(doc);
     } catch (e) {
     console.error(e);
@@ -74,7 +110,6 @@ exports.addBrand = async function(name){
         await client.close();
     }
 }
-
 
 exports.addCarType = async function(name){
     try{
@@ -104,9 +139,7 @@ exports.addCarType = async function(name){
     }
 }
 
-
-
-exports.addModel = async function(name, brand_id, car_type_id){
+exports.addModel = async function(name, brand_id, car_type_id){//good example to copy & paste for tables w/ FKs
     try{
         await client.connect();
         const db = client.db("sample_cars");
@@ -123,15 +156,42 @@ exports.addModel = async function(name, brand_id, car_type_id){
             };
             latestRecord = await collection.findOne(query, options);
             id = latestRecord.model_id + 1;
+            //check brand FK
+            if(!(await exists({brand_id: brand_id}, db.collection('brand')))){
+                throw new ForeignKeyError("provided brand does not exist");
+            }
+            //check car_type FK
+            if(!(await exists({car_type_id: car_type_id}, db.collection('car_type')))){
+                throw new ForeignKeyError("provided car_type does not exist");
+            }
             doc = {model_id: id, model_name: name, brand_id, car_type_id};
         }
-
-        await collection.insertOne(doc);
-        // console.log(typeof ForeignKeyError);
-        throw new ForeignKeyError("messagetest");
+        await collection.insertOne(doc);        
     } catch (e) {
     console.error(e);
     } finally {
         await client.close();
     }
+}
+
+
+
+
+
+///USER ADD OPERATIONS///
+
+
+
+
+///UTILITY FUNCTIONS///
+exists = async function(document, collection){
+    try{
+        const findResult = await collection.findOne(document, {});
+        if(findResult != null){
+            return true;
+        }
+    } catch (e) {
+        console.error(e);
+    }
+    return false;
 }
