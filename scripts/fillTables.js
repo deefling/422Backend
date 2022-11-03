@@ -15,4 +15,10 @@ async function run(){
     await mongoDriver.addBrand("McLaren");
     await mongoDriver.addBrand("Ferarri");
     await mongoDriver.addBrand("Bentley");
+
+    await mongoDriver.addCarType("SUV");
+    await mongoDriver.addCarType("Sedan");
+    await mongoDriver.addCarType("Compact");
+
+    await mongoDriver.addModel("civic", 1, 1);
 }

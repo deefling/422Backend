@@ -1,4 +1,8 @@
 const { MongoClient } = require('mongodb');
+const { ForeignKeyError } = require('./errors/ForeignKeyError.js');
+// import ForeignKeyError from 'errors/ForeignKeyError';
+
+
 //this is the connection info for our specific DB
 //DB name = 422database
 //user = root
@@ -34,6 +38,8 @@ exports.resetDatabase = async function(){
         await client.connect();
         const db = client.db("sample_cars");
         await db.collection("brand").deleteMany();
+        await db.collection("carType").deleteMany();
+        await db.collection("model").deleteMany();
     } catch (e) {
         console.error(e);
     } finally {
@@ -62,6 +68,67 @@ exports.addBrand = async function(name){
         }
 
         await collection.insertOne(doc);
+    } catch (e) {
+    console.error(e);
+    } finally {
+        await client.close();
+    }
+}
+
+
+exports.addCarType = async function(name){
+    try{
+        await client.connect();
+        const db = client.db("sample_cars");
+        const collection = db.collection('car_type');
+        var doc = {};
+
+        if(await collection.countDocuments() == 0){
+            doc = {car_type_id: 0, car_type_name: name};
+        } else {
+            const query = {};
+            const options = {
+                //sort by car_type_id -> descending
+                sort: { "car_type_id": -1 }
+            };
+            latestRecord = await collection.findOne(query, options);
+            id = latestRecord.car_type_id + 1;
+            doc = {car_type_id: id, car_type_name: name};
+        }
+
+        await collection.insertOne(doc);
+    } catch (e) {
+    console.error(e);
+    } finally {
+        await client.close();
+    }
+}
+
+
+
+exports.addModel = async function(name, brand_id, car_type_id){
+    try{
+        await client.connect();
+        const db = client.db("sample_cars");
+        const collection = db.collection('model');
+        var doc = {};
+
+        if(await collection.countDocuments() == 0){
+            doc = {model_id: 0, model_name: name, brand_id, car_type_id};
+        } else {
+            const query = {};
+            const options = {
+                //sort by model_id -> descending
+                sort: { "model_id": -1 }
+            };
+            latestRecord = await collection.findOne(query, options);
+            id = latestRecord.model_id + 1;
+            doc = {model_id: id, model_name: name, brand_id, car_type_id};
+        }
+
+        await collection.insertOne(doc);
+        // console.log(typeof ForeignKeyError);
+        throw new ForeignKeyError("messagetest");
     } catch (e) {
     console.error(e);
     } finally {
