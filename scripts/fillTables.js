@@ -24,4 +24,10 @@ async function run(){
     //fill model with sample data
     await mongoDriver.addModel("civic", 1, 1);
     await mongoDriver.addModel("cybertruck", 4, 1);
+
+    await mongoDriver.addUser("root", "password");
+    await mongoDriver.addUser("admin", "password");
+    await mongoDriver.checkUser("admin", "blah");
+    await mongoDriver.checkUser("admin", "password");
+
 }
