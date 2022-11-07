@@ -53,15 +53,6 @@ exports.resetDatabase = async function(){
 
 ///CAR ADD OPERATIONS///
 /* REMAINING
-* model_year
-    model_year_id
-    model_id (FK)
-    year
-    main_image
-    header_image
-    description
-    featured (bool)
-    quantity
 * package
     package_id
     model_year_id (FK)
@@ -176,7 +167,36 @@ exports.addModel = async function(name, brand_id, car_type_id){//good example to
     }
 }
 
+exports.addYear = async function(model_id, year, main_image, header_image, description, featured, quantity){
+    try{
+        await client.connect();
+        const db = client.db("sample_cars");
+        const collection = db.collection('model_year');
+        var doc = {};
 
+        if(await collection.countDocuments() == 0){
+            doc = {model_year_id: 0, model_id, year, main_image, header_image, description, featured, quantity};
+        } else {
+            const query = {};
+            const options = {
+                //sort by model_year_id -> descending
+                sort: { "model_year_id": -1 }
+            };
+            latestRecord = await collection.findOne(query, options);
+            id = latestRecord.model_year_id + 1;
+            //check model FK
+            if(!(await exists({model_id: model_id}, db.collection('model')))){
+                throw new ForeignKeyError("provided model does not exist");
+            }
+            doc = {model_id: id, model_id, year, main_image, header_image, description, featured, quantity};
+        }
+        await collection.insertOne(doc);        
+    } catch (e) {
+    console.error(e);
+    } finally {
+        await client.close();
+    }
+}
 
 //CAR READ OPERATIONS
 exports.getBrand = async function(id){
@@ -369,6 +389,8 @@ exports.checkUser = async function(user, pw){
     }
     return false;
 }
+
+
 
 
 
