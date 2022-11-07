@@ -38,7 +38,7 @@ exports.resetDatabase = async function(){
         await client.connect();
         var db = client.db("sample_cars");
         await db.collection("brand").deleteMany();
-        await db.collection("carType").deleteMany();
+        await db.collection("car_type").deleteMany();
         await db.collection("model").deleteMany();
         db = client.db("sample_users");
         await db.collection("user").deleteMany();
@@ -178,10 +178,152 @@ exports.addModel = async function(name, brand_id, car_type_id){//good example to
 
 
 
+//CAR READ OPERATIONS
+exports.getBrand = async function(id){
+    try{
+        await client.connect();
+        const db = client.db("sample_cars");
+        const collection = db.collection('brand');
 
+        doc = {brand_id: id};
+        const findResult = await collection.find(doc).toArray();
+        if(findResult.length == 1){
+            return findResult[0];
+        }
+    } catch (e) {
+        console.error(e);
+    } finally {
+        await client.close();
+    }
+    return false;
+}
+
+exports.getBrands = async function(){
+    try{
+        await client.connect();
+        const db = client.db("sample_cars");
+        const collection = db.collection('brand');
+
+        const findResult = await collection.find({}).toArray();
+        return findResult[0];
+    } catch (e) {
+        console.error(e);
+    } finally {
+        await client.close();
+    }
+}
+
+exports.getCarType = async function(id){
+    try{
+        await client.connect();
+        const db = client.db("sample_cars");
+        const collection = db.collection('car_type');
+
+        doc = {car_type_id: id};
+        const findResult = await collection.find(doc).toArray();
+        if(findResult.length == 1){
+            return findResult[0];
+        }
+    } catch (e) {
+        console.error(e);
+    } finally {
+        await client.close();
+    }
+    return false;
+}
+
+exports.getCarTypes = async function(){
+    try{
+        await client.connect();
+        const db = client.db("sample_cars");
+        const collection = db.collection('car_type');
+
+        const findResult = await collection.find({}).toArray();
+        return findResult[0];
+    } catch (e) {
+        console.error(e);
+    } finally {
+        await client.close();
+    }
+}
+
+exports.getModel = async function(id){
+    try{
+        await client.connect();
+        const db = client.db("sample_cars");
+        const collection = db.collection('model');
+
+        doc = {model_id: id};
+        const findResult = await collection.find(doc).toArray();
+        if(findResult.length == 1){
+            return findResult[0];
+        }
+    } catch (e) {
+        console.error(e);
+    } finally {
+        await client.close();
+    }
+    return false;
+}
+
+exports.getModels = async function(){
+    try{
+        await client.connect();
+        const db = client.db("sample_cars");
+        const collection = db.collection('model');
+
+        const findResult = await collection.find({}).toArray();
+        return findResult[0];
+    } catch (e) {
+        console.error(e);
+    } finally {
+        await client.close();
+    }
+}
+
+exports.getModelYear = async function(id){
+    try{
+        await client.connect();
+        const db = client.db("sample_cars");
+        const collection = db.collection('model_year');
+
+        doc = {model_year_id: id};
+        const findResult = await collection.find(doc).toArray();
+        if(findResult.length == 1){
+            return findResult[0];
+        }
+    } catch (e) {
+        console.error(e);
+    } finally {
+        await client.close();
+    }
+    return false;
+}
+
+exports.getModelYears = async function(){
+    try{
+        await client.connect();
+        const db = client.db("sample_cars");
+        const collection = db.collection('model_year');
+
+        const findResult = await collection.find({}).toArray();
+        return findResult[0];
+    } catch (e) {
+        console.error(e);
+    } finally {
+        await client.close();
+    }
+}
 
 ///USER ADD OPERATIONS///
 exports.addUser = async function(user, pw){
+/*Changes
+* username -> email
+user_type
+firstname & lastname
+phone number
+ */
+
     try{
         await client.connect();
         const db = client.db("sample_users");
