@@ -218,7 +218,7 @@ exports.checkUser = async function(user, pw){
         doc = {username: user, password: pw};
         const findResult = await collection.find(doc).toArray();
         if(findResult.length == 1){
-            return true;
+            return findResult[0];
         }
     } catch (e) {
         console.error(e);

@@ -81,7 +81,7 @@ const CarJSONobj = {cars: [
 ]};
 
 //activation of "main" method
-server.listen(3000, api());
+server.listen(3001, api());
 
 //"main" method
 function api() {
@@ -164,10 +164,10 @@ function api() {
     })
 
     server.post("/checkLogin", (req, res) =>{
-        const user = req.query.username;
-        const pw = req.query.password;
+        const user = req.body.username;
+        const pw = req.body.password;
         mongoDriver.checkUser(user, pw).then(
-            function(value){res.json(value);},
+            (value) => {res.json(value);},
         )
     })
 }
