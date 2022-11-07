@@ -127,6 +127,7 @@ function api() {
             listCars['cars'].push({carID: item['id']});
         })
         res.json(listCars);
+
     })
 
     server.get('/getFeaturedCars', (req, res) => {
@@ -140,28 +141,6 @@ function api() {
 
 
     ///USER INFO///
-    server.get('/getLogins', (req, res) => {
-        // HARDCODED
-        //I plan to change this to take login creds & return bool rather than exposing passwords on client side
-        JSONobj = {stuff: [
-            {
-            id: "1", 
-            email: "test@gmail.com",
-            password: "983759345736jlhrbf38374"
-            },
-            {
-                id: "2", 
-                email: "fake@gmail.com",
-                password: "43g6gh6iu45y64h6iu"
-            },
-            {
-                id: "3", 
-                email: "random@gmail.com",
-                password: "hj4g6j6g878g6jh8g23lk45"
-            }
-        ]};
-        res.json(JSONobj);
-    })
 
     server.post("/checkLogin", (req, res) =>{
         const user = req.body.username;

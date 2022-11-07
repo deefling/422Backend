@@ -167,7 +167,7 @@ exports.addModel = async function(name, brand_id, car_type_id){//good example to
     }
 }
 
-exports.addYear = async function(model_id, year, main_image, header_image, description, featured, quantity){
+exports.addModelYear = async function(model_id, year, main_image, header_image, description, featured, quantity){
     try{
         await client.connect();
         const db = client.db("sample_cars");
@@ -225,7 +225,7 @@ exports.getBrands = async function(){
         const collection = db.collection('brand');
 
         const findResult = await collection.find({}).toArray();
-        return findResult[0];
+        return findResult;
     } catch (e) {
         console.error(e);
     } finally {
@@ -259,7 +259,7 @@ exports.getCarTypes = async function(){
         const collection = db.collection('car_type');
 
         const findResult = await collection.find({}).toArray();
-        return findResult[0];
+        return findResult;
     } catch (e) {
         console.error(e);
     } finally {
@@ -293,7 +293,7 @@ exports.getModels = async function(){
         const collection = db.collection('model');
 
         const findResult = await collection.find({}).toArray();
-        return findResult[0];
+        return findResult;
     } catch (e) {
         console.error(e);
     } finally {
@@ -327,7 +327,7 @@ exports.getModelYears = async function(){
         const collection = db.collection('model_year');
 
         const findResult = await collection.find({}).toArray();
-        return findResult[0];
+        return findResult;
     } catch (e) {
         console.error(e);
     } finally {

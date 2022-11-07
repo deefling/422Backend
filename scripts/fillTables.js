@@ -15,6 +15,7 @@ async function run(){
     await mongoDriver.addBrand("McLaren");
     await mongoDriver.addBrand("Ferarri");
     await mongoDriver.addBrand("Bentley");
+    console.log(await mongoDriver.getBrands());
 
     //fill car_type table with sample data
     await mongoDriver.addCarType("SUV");
