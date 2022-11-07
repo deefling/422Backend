@@ -53,15 +53,6 @@ exports.resetDatabase = async function(){
 
 ///CAR ADD OPERATIONS///
 /* REMAINING
-* model_year
-    model_year_id
-    model_id (FK)
-    year
-    main_image
-    header_image
-    description
-    featured (bool)
-    quantity
 * package
     package_id
     model_year_id (FK)
@@ -256,6 +247,8 @@ exports.checkUser = async function(user, pw){
     }
     return false;
 }
+
+
 
 
 
