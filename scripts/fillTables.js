@@ -27,4 +27,11 @@ async function run(){
 
     //fill year with sample data
     await mongoDriver.addYear(1, "2020", "/images/cybertruckMain.jpg", "/images/cybertruckHeader.jpg", "Older cybertruck", false, 25);
+    
+    //adding users
+    await mongoDriver.addUser("root", "password");
+    await mongoDriver.addUser("admin", "password");
+    await mongoDriver.checkUser("admin", "blah");
+    await mongoDriver.checkUser("admin", "password");
+
 }

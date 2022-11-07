@@ -10,6 +10,9 @@ server.use(cors({
 //allow API users to access images directory
 server.use('/images', express.static('images'));
 
+server.use(express.json());
+server.use(express.urlencoded({ extended: true }));
+
 //Custom driver for our DB
 const mongoDriver = require('./mongoDriver');
 
@@ -78,7 +81,7 @@ const CarJSONobj = {cars: [
 ]};
 
 //activation of "main" method
-server.listen(3000, api());
+server.listen(3001, api());
 
 //"main" method
 function api() {
@@ -87,6 +90,7 @@ function api() {
     ///TEMPLATES///
     server.post('/endpoint', (req, res) => {
         console.log('This is the template for a CREATE operation');
+        res.send('This is the template for a CREATE operation');
     })
     server.get('/endpoint', (req, res) => {
         res.send('This is the template for a READ operation');
@@ -157,5 +161,13 @@ function api() {
             }
         ]};
         res.json(JSONobj);
+    })
+
+    server.post("/checkLogin", (req, res) =>{
+        const user = req.body.username;
+        const pw = req.body.password;
+        mongoDriver.checkUser(user, pw).then(
+            (value) => {res.json(value);},
+        )
     })
 }

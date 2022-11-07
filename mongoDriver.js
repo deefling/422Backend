@@ -36,10 +36,12 @@ exports.bootDB = async function(){
 exports.resetDatabase = async function(){
     try{
         await client.connect();
-        const db = client.db("sample_cars");
+        var db = client.db("sample_cars");
         await db.collection("brand").deleteMany();
         await db.collection("carType").deleteMany();
         await db.collection("model").deleteMany();
+        db = client.db("sample_users");
+        await db.collection("user").deleteMany();
     } catch (e) {
         console.error(e);
     } finally {
@@ -208,7 +210,52 @@ exports.addYear = async function(model_id, year, main_image, header_image, descr
 
 
 ///USER ADD OPERATIONS///
+exports.addUser = async function(user, pw){
+    try{
+        await client.connect();
+        const db = client.db("sample_users");
+        const collection = db.collection('user');
+        var doc = {};
 
+        if(await collection.countDocuments() == 0){
+            doc = {user_id: 0, username: user, password: pw};
+        } else {
+            const query = {};
+            const options = {
+                //sort by user_id -> descending
+                sort: { "user_id": -1 }
+            };
+            latestRecord = await collection.findOne(query, options);
+            id = latestRecord.user_id + 1;
+            doc = {user_id: id,  username: user, password: pw};
+        }
+
+        await collection.insertOne(doc);
+    } catch (e) {
+    console.error(e);
+    } finally {
+        await client.close();
+    }
+}
+
+exports.checkUser = async function(user, pw){
+    try{
+        await client.connect();
+        const db = client.db("sample_users");
+        const collection = db.collection('user');
+
+        doc = {username: user, password: pw};
+        const findResult = await collection.find(doc).toArray();
+        if(findResult.length == 1){
+            return findResult[0];
+        }
+    } catch (e) {
+        console.error(e);
+    } finally {
+        await client.close();
+    }
+    return false;
+}
 
 
 
