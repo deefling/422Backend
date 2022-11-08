@@ -122,12 +122,7 @@ function api() {
     })
 
     server.get('/getCars', (req, res) => { 
-        var listCars = {cars:[]};
-        CarJSONobj['cars'].forEach((item) => {
-            listCars['cars'].push({carID: item['id']});
-        })
-        res.json(listCars);
-
+        mongoDriver.getCars().then( (value) => {res.json(value);},);
     })
 
     server.get('/getFeaturedCars', (req, res) => {

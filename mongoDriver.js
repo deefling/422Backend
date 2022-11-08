@@ -40,6 +40,7 @@ exports.resetDatabase = async function(){
         await db.collection("brand").deleteMany();
         await db.collection("car_type").deleteMany();
         await db.collection("model").deleteMany();
+        await db.collection("model_year").deleteMany();
         db = client.db("sample_users");
         await db.collection("user").deleteMany();
     } catch (e) {
@@ -199,6 +200,46 @@ exports.addModelYear = async function(model_id, year, main_image, header_image, 
 }
 
 //CAR READ OPERATIONS
+exports.getCars = async function(){
+    try{
+        await client.connect();
+        const findResult = {cars:[]};
+
+        const db = client.db("sample_cars");
+        const model_year_collection = db.collection('model_year');
+        const model_collection = db.collection('model');
+        const brand_collection = db.collection('brand');
+        const car_type_collection = db.collection('car_type');
+
+        var model_year_data = await model_year_collection.find({}).toArray();
+
+        for (var i = 0;i<model_year_data.length;i++){
+            var findmodelid = {model_id : model_year_data[i]['model_id']};
+            var model_data = await model_collection.find(findmodelid).toArray();
+
+            var findbrandid = {brand_id : model_data[0]['brand_id']};
+            var brand_data = await brand_collection.find(findbrandid).toArray();
+
+            var findcartypeid = {car_type_id : model_data[0]['car_type_id']};
+            var car_type_data = await car_type_collection.find(findcartypeid).toArray();
+
+            var tempArr = {car_name: {model:model_data[0]['model_name'], brand:brand_data[0]['brand_name'], year:model_year_data[i]['year']},
+                category:car_type_data[0]['car_type_name'],
+                main_image:model_year_data[i]['main_image'],
+                header_image:model_year_data[i]['header_image'],
+                description:model_year_data[i]['description']};
+                
+            findResult['cars'].push(tempArr);
+        }
+
+        return findResult;
+    } catch (e) {
+        console.error(e);
+    } finally {
+        await client.close();
+    }
+}
+
 exports.getBrand = async function(id){
     try{
         await client.connect();
