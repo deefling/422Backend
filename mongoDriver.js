@@ -1,3 +1,4 @@
+const { json } = require('express');
 const { MongoClient } = require('mongodb');
 const { ForeignKeyError } = require('./errors/ForeignKeyError.js');
 // import ForeignKeyError from 'errors/ForeignKeyError';
@@ -371,6 +372,31 @@ exports.getModelYears = async function(){
         return findResult;
     } catch (e) {
         console.error(e);
+    } finally {
+        await client.close();
+    }
+}
+
+//CAR UPDATE OPERATIONS
+exports.updateCar = async function(json){
+    try{
+        await client.connect();
+        const db = client.db("sample_cars");
+        const collection = db.collection('model_year');
+
+        var myquery = { model_year_id: json.model_year_id };
+
+        // "main_image": "",
+        // "header_image": "",
+        // "description": "Very Cool Car",
+        // "featured": false,
+        // "quantity": 3
+        var newvalues = { $set: {model_id: json.model_id, year: json.year } };
+        await collection.updateOne(myquery, newvalues);
+        return true;
+    } catch (e) {
+        console.error(e);
+        return false;
     } finally {
         await client.close();
     }

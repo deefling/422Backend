@@ -133,7 +133,13 @@ function api() {
         res.json(featuredCars);
     })
 
+    //CAR UPDATE
+    server.post("/updateCar", (req, res) =>{
 
+        mongoDriver.updateCar(req.body).then(
+            (value) => {res.json(value);},
+        )
+    })
 
     ///USER INFO///
 
