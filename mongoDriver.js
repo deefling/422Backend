@@ -345,7 +345,7 @@ exports.getModels = async function(){
         const collection = db.collection('model');
 
         const findResult = await collection.find({}).toArray();
-        return findResult;
+        return {models: findResult};
     } catch (e) {
         console.error(e);
     } finally {

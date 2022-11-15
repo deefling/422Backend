@@ -129,6 +129,10 @@ function api() {
         mongoDriver.getBrands().then( (value) => {res.json(value);},);
     })
 
+    server.get('/getModels', (req, res) => { 
+        mongoDriver.getModels().then( (value) => {res.json(value);},);
+    })
+
     server.get('/getCarTypes', (req, res) => { 
         mongoDriver.getCarTypes().then( (value) => {res.json(value);},);
     })
