@@ -233,11 +233,13 @@ exports.getCars = async function(){
                     brand:brand_data[0]['brand_name'], 
                     year:model_year_data[i]['year']
                 },
-                category_id:car_type_data[0]['car_type_id'],
+                category_id:model_data[0]['car_type_id'],
                 category:car_type_data[0]['car_type_name'],
                 main_image:model_year_data[i]['main_image'],
                 header_image:model_year_data[i]['header_image'],
-                description:model_year_data[i]['description']
+                description:model_year_data[i]['description'],
+                quantity:model_year_data[i]['quantity'],
+                featured:model_year_data[i]['featured'],
             };
                 
             findResult['cars'].push(tempCar);
