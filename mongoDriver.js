@@ -274,7 +274,7 @@ exports.getBrands = async function(){
         const collection = db.collection('brand');
 
         const findResult = await collection.find({}).toArray();
-        return findResult;
+        return {brands: findResult};
     } catch (e) {
         console.error(e);
     } finally {
@@ -308,7 +308,7 @@ exports.getCarTypes = async function(){
         const collection = db.collection('car_type');
 
         const findResult = await collection.find({}).toArray();
-        return findResult;
+        return {carTypes: findResult};
     } catch (e) {
         console.error(e);
     } finally {

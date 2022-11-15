@@ -125,6 +125,16 @@ function api() {
         mongoDriver.getCars().then( (value) => {res.json(value);},);
     })
 
+    server.get('/getBrands', (req, res) => { 
+        mongoDriver.getBrands().then( (value) => {res.json(value);},);
+    })
+
+    server.get('/getCarTypes', (req, res) => { 
+        mongoDriver.getCarTypes().then( (value) => {res.json(value);},);
+    })
+
+
+
     server.get('/getFeaturedCars', (req, res) => {
         var featuredCars = {cars:[]};
         featuredCars['cars'].push({carID: CarJSONobj['cars'][3]['id']});
