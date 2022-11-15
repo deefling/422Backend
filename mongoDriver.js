@@ -227,10 +227,13 @@ exports.getCars = async function(){
             var tempCar = {
                 car_id: model_year_data[i]['model_year_id'],
                 car_name: {
+                    model_id:model_data[0]['model_id'], 
                     model:model_data[0]['model_name'], 
+                    brand_id:brand_data[0]['brand_id'],
                     brand:brand_data[0]['brand_name'], 
                     year:model_year_data[i]['year']
                 },
+                category_id:car_type_data[0]['car_type_id'],
                 category:car_type_data[0]['car_type_name'],
                 main_image:model_year_data[i]['main_image'],
                 header_image:model_year_data[i]['header_image'],
