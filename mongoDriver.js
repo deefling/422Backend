@@ -190,7 +190,7 @@ exports.addModelYear = async function(model_id, year, main_image, header_image, 
             if(!(await exists({model_id: model_id}, db.collection('model')))){
                 throw new ForeignKeyError("provided model does not exist");
             }
-            doc = {model_id: id, model_id, year, main_image, header_image, description, featured, quantity};
+            doc = {model_year_id: id, model_id, year, main_image, header_image, description, featured, quantity};
         }
         await collection.insertOne(doc);        
     } catch (e) {
@@ -224,13 +224,20 @@ exports.getCars = async function(){
             var findcartypeid = {car_type_id : model_data[0]['car_type_id']};
             var car_type_data = await car_type_collection.find(findcartypeid).toArray();
 
-            var tempArr = {car_name: {model:model_data[0]['model_name'], brand:brand_data[0]['brand_name'], year:model_year_data[i]['year']},
+            var tempCar = {
+                car_id: model_year_data[i]['model_year_id'],
+                car_name: {
+                    model:model_data[0]['model_name'], 
+                    brand:brand_data[0]['brand_name'], 
+                    year:model_year_data[i]['year']
+                },
                 category:car_type_data[0]['car_type_name'],
                 main_image:model_year_data[i]['main_image'],
                 header_image:model_year_data[i]['header_image'],
-                description:model_year_data[i]['description']};
+                description:model_year_data[i]['description']
+            };
                 
-            findResult['cars'].push(tempArr);
+            findResult['cars'].push(tempCar);
         }
 
         return findResult;
