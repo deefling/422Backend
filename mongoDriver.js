@@ -394,17 +394,37 @@ exports.updateCar = async function(json){
     try{
         await client.connect();
         const db = client.db("sample_cars");
-        const collection = db.collection('model_year');
+        var collection = db.collection('model_year');
 
         var myquery = { model_year_id: json.model_year_id };
+    
+        var newvalues = { $set: {
+            model_id: json.model_id, 
+            year: json.year,
+            main_image: json.main_image,
+            header_image: json.header_image,
+            description: json.description,
+            quantity: json.quantity,
+            featured: json.featured} 
+        };
 
-        // "main_image": "",
-        // "header_image": "",
-        // "description": "Very Cool Car",
-        // "featured": false,
-        // "quantity": 3
-        var newvalues = { $set: {model_id: json.model_id, year: json.year } };
         await collection.updateOne(myquery, newvalues);
+
+        collection = db.collection('model');
+        myquery = { model_id: json.model_id };
+
+        newvalues = { $set: {
+            car_type_id: json.category}
+        };
+
+        await collection.updateOne(myquery, newvalues);
+
+        //Model
+        //"model_id": "4", selector
+        // "category": 1,
+        //brand
+
+
         return true;
     } catch (e) {
         console.error(e);
