@@ -140,16 +140,16 @@ function api() {
 
 
     server.get('/getFeaturedCars', (req, res) => {
-        var featuredCars = {cars:[]};
-        featuredCars['cars'].push({carID: CarJSONobj['cars'][3]['id']});
-        featuredCars['cars'].push({carID: CarJSONobj['cars'][2]['id']});
-        featuredCars['cars'].push({carID: CarJSONobj['cars'][0]['id']});
-        res.json(featuredCars);
+        // var featuredCars = {cars:[]};
+        // featuredCars['cars'].push({carID: CarJSONobj['cars'][3]['id']});
+        // featuredCars['cars'].push({carID: CarJSONobj['cars'][2]['id']});
+        // featuredCars['cars'].push({carID: CarJSONobj['cars'][0]['id']});
+        // res.json(featuredCars);
+        mongoDriver.getFeaturedCars().then( (value) => {res.json(value);},);
     })
 
     //CAR UPDATE
     server.post("/updateCar", (req, res) =>{
-
         mongoDriver.updateCar(req.body).then(
             (value) => {res.json(value);},
         )

@@ -253,6 +253,19 @@ exports.getCars = async function(){
     }
 }
 
+exports.getFeaturedCars = async function(){
+    var cars = await this.getCars();
+    var featuredCars = {cars: []}
+
+    for(var car of cars.cars.slice()){
+        if(car.featured){
+            featuredCars.cars.push(car);
+        }
+    }
+
+    return featuredCars;
+}
+
 exports.getBrand = async function(id){
     try{
         await client.connect();
@@ -418,13 +431,7 @@ exports.updateCar = async function(json){
         };
 
         await collection.updateOne(myquery, newvalues);
-
-        //Model
-        //"model_id": "4", selector
-        // "category": 1,
-        //brand
-
-
+        
         return true;
     } catch (e) {
         console.error(e);
