@@ -201,6 +201,47 @@ exports.addModelYear = async function(model_id, year, main_image, header_image, 
 }
 
 //CAR READ OPERATIONS
+exports.getCar = async function(id){
+    await client.connect();
+        const db = client.db("sample_cars");
+        const model_year_collection = db.collection('model_year');
+        const model_collection = db.collection('model');
+        const brand_collection = db.collection('brand');
+        const car_type_collection = db.collection('car_type');
+
+        var query = {model_year_id: parseInt(id)}
+        var model_year_data = await model_year_collection.findOne(query);
+
+        query = {model_id : model_year_data.model_id};
+        var model_data = await model_collection.findOne(query);
+
+        query = {brand_id : model_data.brand_id};
+        var brand_data = await brand_collection.findOne(query);
+
+        query = {car_type_id : model_data.car_type_id};
+        var car_type_data = await car_type_collection.findOne(query);
+
+        var tempCar = {
+            car_id: model_year_data.model_year_id,
+            car_name: {
+                model_id:model_data.model_id, 
+                model:model_data.model_name, 
+                brand_id:brand_data.brand_id,
+                brand:brand_data.brand_name, 
+                year:model_year_data.year
+            },
+            category_id:model_data.car_type_id,
+            category:car_type_data.car_type_name,
+            main_image:model_year_data.main_image,
+            header_image:model_year_data.header_image,
+            description:model_year_data.description,
+            quantity:model_year_data.quantity,
+            featured:model_year_data.featured,
+        };
+
+        return tempCar;
+}
+
 exports.getCars = async function(){
     try{
         await client.connect();
@@ -431,7 +472,7 @@ exports.updateCar = async function(json){
         };
 
         await collection.updateOne(myquery, newvalues);
-        
+
         return true;
     } catch (e) {
         console.error(e);

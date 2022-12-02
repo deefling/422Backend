@@ -107,18 +107,18 @@ function api() {
     ///API CALLS///
 
     ///CAR INFO///
-    server.get('/getCarDisplay/:id', (req, res) => { 
-        var id = req.params.id - 1;
+    server.get('/getCar/:id', (req, res) => { 
+        var id = req.params.id;
+        mongoDriver.getCar(id).then( (value) => {res.json(value);},);
+        // var carDisplay = {
+        //     car_name: CarJSONobj.cars[id].car_name,
+        //     category: CarJSONobj.cars[id].category,
+        //     main_image: CarJSONobj.cars[id].main_image,
+        //     header_image: CarJSONobj.cars[id].header_image,
+        //     description: CarJSONobj.cars[id].description
+        // }
 
-        var carDisplay = {
-            car_name: CarJSONobj.cars[id].car_name,
-            category: CarJSONobj.cars[id].category,
-            main_image: CarJSONobj.cars[id].main_image,
-            header_image: CarJSONobj.cars[id].header_image,
-            description: CarJSONobj.cars[id].description
-        }
-
-        res.json(carDisplay);
+        // res.json(carDisplay);
     })
 
     server.get('/getCars', (req, res) => { 
@@ -137,14 +137,7 @@ function api() {
         mongoDriver.getCarTypes().then( (value) => {res.json(value);},);
     })
 
-
-
     server.get('/getFeaturedCars', (req, res) => {
-        // var featuredCars = {cars:[]};
-        // featuredCars['cars'].push({carID: CarJSONobj['cars'][3]['id']});
-        // featuredCars['cars'].push({carID: CarJSONobj['cars'][2]['id']});
-        // featuredCars['cars'].push({carID: CarJSONobj['cars'][0]['id']});
-        // res.json(featuredCars);
         mongoDriver.getFeaturedCars().then( (value) => {res.json(value);},);
     })
 

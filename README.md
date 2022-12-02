@@ -8,12 +8,18 @@ npm run reset -> fresh database
 images available in /images 
 
 //TODO
-    Add operations for car
-    Delete operations for car
+    'Add' operations for car
+    'Delete' operations for car
+    Add & Delete car on website
+    
     Finish user table
-    Finish package tables
+    API operations for user tables
 
-    frontend fix routing
+    Finish package tables
+    API operations for package tables
+
+    Finish purchase tables
+    API operations for purchases
 
     SLDC Doc (both groups)
         Decision making
@@ -24,20 +30,13 @@ images available in /images
     API Documentation
         Google Doc?
 
-    Optimize calls for Frontend
-        Atomize tasks & create larger compound calls
-
-    Validation Standards
+    Data Validation
         Done on frontend?
 
     Communication Logs
+    Error Logs
 
     API Security
         Check req origins
-        Don't expose data
-        Hash private data
-    
--- Errors
-    Custom Error Classes
-    Fallbacks / Error Handling
-    Error Logs
+        Don't expose private data
+        Hash private data like passwords
