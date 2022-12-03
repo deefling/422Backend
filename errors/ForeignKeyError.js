@@ -1,5 +1,5 @@
 class ForeignKeyError extends Error{
-    constructor( message) {
+    constructor(message) {
         super();
         this.message = message;
         this.name = "ForeignKeyError";

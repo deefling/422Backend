@@ -174,7 +174,7 @@ exports.addModelYear = async function(model_id, year, main_image, header_image, 
         await client.connect();
         const db = client.db("sample_cars");
         const collection = db.collection('model_year');
-        var doc = {};
+        // var doc = {};
 
         if(await collection.countDocuments() == 0){
             doc = {model_year_id: 0, model_id, year, main_image, header_image, description, featured, quantity};
@@ -188,15 +188,19 @@ exports.addModelYear = async function(model_id, year, main_image, header_image, 
             id = latestRecord.model_year_id + 1;
             //check model FK
             if(!(await exists({model_id: model_id}, db.collection('model')))){
-                throw new ForeignKeyError("provided model does not exist");
+                return new ForeignKeyError("provided model does not exist");
             }
             doc = {model_year_id: id, model_id, year, main_image, header_image, description, featured, quantity};
         }
-        await collection.insertOne(doc);        
+        var value = await collection.insertOne(doc); 
+        console.log(value.acknowledged);
+        // TODO - catch any error here?
+        return value.acknowledged;
     } catch (e) {
     console.error(e);
     } finally {
         await client.close();
+        // return false;
     }
 }
 
@@ -444,6 +448,7 @@ exports.getModelYears = async function(){
 }
 
 //CAR UPDATE OPERATIONS
+// TODO - validate model_id
 exports.updateCar = async function(json){
     try{
         await client.connect();

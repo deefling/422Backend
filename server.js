@@ -9,76 +9,13 @@ server.use(cors({
 
 //allow API users to access images directory
 server.use('/images', express.static('images'));
-
 server.use(express.json());
 server.use(express.urlencoded({ extended: true }));
 
 //Custom driver for our DB
 const mongoDriver = require('./mongoDriver');
 
-//Temporary values until DB is set up
-const CarJSONobj = {cars: [
-    {
-        id: "1", 
-        car_name: {
-            model: "Civic",
-            brand: "Honda",
-            year: "1997"
-        },
-        category: "compact car",
-        main_image: "/images/civicMain.jpg",
-        header_image: "/images/civicHeader.jpg",
-        description: "bla bla bla"
-    },
-    {
-        id: "2", 
-        car_name: {
-            model: "Cybertruck",
-            brand: "Tesla",
-            year: "2023" 
-        },
-        category: "truck",
-        main_image: "/images/cybertruckMain.jpg",
-        header_image: "/images/cybertruckHeader.jpg",
-        description: "bla bla bla"
-    },
-    {
-        id: "3", 
-        car_name: {
-            model: "P1",
-            brand: "McLaren",
-            year: "2013"
-        },
-        category: "sports car",
-        main_image: "/images/p1Main.jpg",
-        header_image: "/images/p1Header.jpg",
-        description: "bla bla bla"
-    },
-    {
-        id: "4", 
-        car_name: {
-            model: "Silver Ghost",
-            brand: "Rolls Royce",
-            year: "1925"
-        },
-        category: "luxury car",
-        main_image: "/images/silverGhostMain.jpg",
-        header_image: "/images/silverGhostHeader.jpg",
-        description: "bla bla bla"
-    },
-    {
-        id: "5", 
-        car_name: {
-            model: "Aventador",
-            brand: "Lamborghini",
-            year: "2018"
-        },
-        category: "sports car",
-        main_image: "/images/aventadorMain.jpg",
-        header_image: "/images/aventadorHead.jpg",
-        description: "bla bla bla"
-    }
-]};
+//TODO catch custom errors
 
 //activation of "main" method
 server.listen(3001, api());
@@ -103,22 +40,10 @@ function api() {
     })
 
 
-
-    ///API CALLS///
-
     ///CAR INFO///
     server.get('/getCar/:id', (req, res) => { 
         var id = req.params.id;
         mongoDriver.getCar(id).then( (value) => {res.json(value);},);
-        // var carDisplay = {
-        //     car_name: CarJSONobj.cars[id].car_name,
-        //     category: CarJSONobj.cars[id].category,
-        //     main_image: CarJSONobj.cars[id].main_image,
-        //     header_image: CarJSONobj.cars[id].header_image,
-        //     description: CarJSONobj.cars[id].description
-        // }
-
-        // res.json(carDisplay);
     })
 
     server.get('/getCars', (req, res) => { 
@@ -141,10 +66,21 @@ function api() {
         mongoDriver.getFeaturedCars().then( (value) => {res.json(value);},);
     })
 
+    //CAR ADD
+    server.put("/addCar", (req, res) => {
+        mongoDriver.addModelYear(req.body.model_id, req.body.year, req.body.main_image, req.body.header_image, req.body.description, req.body.featured, req.body.quantity)
+            .then((value) => {
+                if(value.name != null){
+                    res.json({[value.name]:value.message});
+                }
+                res.json({inserted:value});
+            });
+    });
+
     //CAR UPDATE
     server.post("/updateCar", (req, res) =>{
         mongoDriver.updateCar(req.body).then(
-            (value) => {res.json(value);},
+            (value) => {res.json({updated:value});},
         )
     })
 

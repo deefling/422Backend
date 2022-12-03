@@ -35,6 +35,7 @@ images available in /images
 
     Communication Logs
     Error Logs
+        Error checking - return new errors instead of throwing
 
     API Security
         Check req origins
