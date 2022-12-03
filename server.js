@@ -72,8 +72,9 @@ function api() {
             .then((value) => {
                 if(value.name != null){
                     res.json({[value.name]:value.message});
+                } else {
+                    res.json({inserted:value});
                 }
-                res.json({inserted:value});
             });
     });
 

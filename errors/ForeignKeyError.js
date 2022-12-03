@@ -1,4 +1,6 @@
-class ForeignKeyError extends Error{
+const { ErrorLogger } = require('./ErrorLogger.js')
+
+class ForeignKeyError extends ErrorLogger{
     constructor(message) {
         super();
         this.message = message;
