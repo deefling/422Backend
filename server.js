@@ -16,8 +16,9 @@ server.use(express.urlencoded({ extended: true }));
 const mongoDriver = require('./mongoDriver');
 
 //TODO catch custom errors
-//TODO api security
 
+//TODO api security - don't think this actually blocks anything
+//need to modify it to only allow requests from certain IPs and from vercel app
 server.use(function apiSecurity(req, res, next){
     var host = req.hostname;
     if(host === "localhost" || host === "422backend.cyclic.app"){

@@ -8,7 +8,6 @@ npm run reset -> fresh database
 images available in /images 
 
 //TODO
-    'Add' operations for car
     'Delete' operations for car
     Add & Delete car on website
     

@@ -22,7 +22,6 @@ exports.resetDatabase = async function(){
         await db.collection("package").deleteMany();
         await db.collection("package_detail");
         await db.collection("part");
-        db = client.db("sample_users");
         db = client.db("users");
         await db.collection("user").deleteMany();
     } catch (e) {
@@ -180,7 +179,7 @@ exports.addModelYear = async function(model_id, year, main_image, header_image, 
 exports.addPackage = async function(model_year_id, package_name, base_price){//good example to copy & paste for simple tables
     try{
         await client.connect();
-        const db = client.db("sample_cars"); //select database
+        const db = client.db("cars"); //select database
         const collection = db.collection('package'); //select collection (table)
         var doc = {}; //empty document to insert (will be modified)
 
@@ -210,7 +209,7 @@ exports.addPackage = async function(model_year_id, package_name, base_price){//g
 exports.addPackageDetail = async function(package_id, part_id){//good example to copy & paste for simple tables
     try{
         await client.connect();
-        const db = client.db("sample_cars"); //select database
+        const db = client.db("cars"); //select database
         const collection = db.collection('package_detail'); //select collection (table)
         var doc = {package_id, part_id}; //empty document to insert (will be modified)
         //insert document
@@ -225,7 +224,7 @@ exports.addPackageDetail = async function(package_id, part_id){//good example to
 exports.addPart = async function(part_type_id, part_name, part_price){//good example to copy & paste for simple tables
     try{
         await client.connect();
-        const db = client.db("sample_cars"); //select database
+        const db = client.db("cars"); //select database
         const collection = db.collection('part'); //select collection (table)
         var doc = {}; //empty document to insert (will be modified)
 
@@ -235,7 +234,7 @@ exports.addPart = async function(part_type_id, part_name, part_price){//good exa
             //query DB to find last record & imcrement index from there
             const query = {};
             const options = {
-                //sort by brand_id -> descending
+                //sort by part_id -> descending
                 sort: { "part_id": -1 }
             };
             latestRecord = await collection.findOne(query, options);
