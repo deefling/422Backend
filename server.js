@@ -20,16 +20,12 @@ const mongoDriver = require('./mongoDriver');
 
 server.use(function apiSecurity(req, res, next){
     var host = req.hostname;
-    // console.log(req.origin);
-    // if(host === "localhost" || host === ""){
-    //     res.json({message:"hello world"});
-    // }
-    var doc = {
-        host: host,
-        origin: req.origin
+    if(host === "localhost" || host === "422backend.cyclic.app"){
+        next();
+    } else {
+        var doc = {error:"unauthorized host detected"};
+        res.json(doc);
     }
-    res.json(doc);
-    next();
 });
 
 //activation of "main" method
