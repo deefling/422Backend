@@ -16,6 +16,17 @@ server.use(express.urlencoded({ extended: true }));
 const mongoDriver = require('./mongoDriver');
 
 //TODO catch custom errors
+//TODO api security
+
+server.use(function apiSecurity(req, res, next){
+    var host = req.hostname;
+    if(host === "localhost" || host === "422backend.cyclic.app"){
+        next();
+    } else {
+        var doc = {error:"unauthorized host detected"};
+        res.json(doc);
+    }
+});
 
 //activation of "main" method
 server.listen(3001, api());
@@ -72,8 +83,9 @@ function api() {
             .then((value) => {
                 if(value.name != null){
                     res.json({[value.name]:value.message});
+                } else {
+                    res.json({inserted:value});
                 }
-                res.json({inserted:value});
             });
     });
 
