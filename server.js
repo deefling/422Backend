@@ -16,6 +16,21 @@ server.use(express.urlencoded({ extended: true }));
 const mongoDriver = require('./mongoDriver');
 
 //TODO catch custom errors
+//TODO api security
+
+server.use(function apiSecurity(req, res, next){
+    var host = req.hostname;
+    // console.log(req.origin);
+    // if(host === "localhost" || host === ""){
+    //     res.json({message:"hello world"});
+    // }
+    var doc = {
+        host: host,
+        origin: req.origin
+    }
+    res.json(doc);
+    next();
+});
 
 //activation of "main" method
 server.listen(3001, api());
