@@ -42,6 +42,8 @@ exports.resetDatabase = async function(){
         await db.collection("car_type").deleteMany();
         await db.collection("model").deleteMany();
         await db.collection("model_year").deleteMany();
+        await db.collection("package").deleteMany();
+        await db.collection("package_detail");
         db = client.db("sample_users");
         await db.collection("user").deleteMany();
     } catch (e) {
@@ -55,14 +57,6 @@ exports.resetDatabase = async function(){
 
 ///CAR ADD OPERATIONS///
 /* REMAINING
-* package
-    package_id
-    model_year_id (FK)
-    package_name
-    base_price
-* package_detail
-    package_id (FK)
-    part_id
 * part
     part_id
     part_type_id (FK)
@@ -203,6 +197,83 @@ exports.addModelYear = async function(model_id, year, main_image, header_image, 
         // return false;
     }
 }
+
+exports.addPackage = async function(model_year_id, package_name, base_price){//good example to copy & paste for simple tables
+    try{
+        await client.connect();
+        const db = client.db("sample_cars"); //select database
+        const collection = db.collection('package'); //select collection (table)
+        var doc = {}; //empty document to insert (will be modified)
+
+        if(await collection.countDocuments() == 0){ //check if collection empty
+            doc = {package_id: 0, model_year_id, package_name, base_price}; //start at index 0
+        } else { //not empty
+            //query DB to find last record & imcrement index from there
+            const query = {};
+            const options = {
+                //sort by brand_id -> descending
+                sort: { "package_id": -1 }
+            };
+            latestRecord = await collection.findOne(query, options);
+            id = latestRecord.package_id + 1;
+            doc = {package_id : id, model_year_id, package_name, base_price};
+        }
+
+        //insert document
+        await collection.insertOne(doc);
+    } catch (e) {
+    console.error(e);
+    } finally {
+        await client.close();
+    }
+}
+
+exports.addPackageDetail = async function(package_id, part_id){//good example to copy & paste for simple tables
+    try{
+        await client.connect();
+        const db = client.db("sample_cars"); //select database
+        const collection = db.collection('package_detail'); //select collection (table)
+        var doc = {package_id, part_id}; //empty document to insert (will be modified)
+        //insert document
+        await collection.insertOne(doc);
+    } catch (e) {
+    console.error(e);
+    } finally {
+        await client.close();
+    }
+}
+
+exports.addPart = async function(part_type_id, part_name, part_price){//good example to copy & paste for simple tables
+    try{
+        await client.connect();
+        const db = client.db("sample_cars"); //select database
+        const collection = db.collection('part'); //select collection (table)
+        var doc = {}; //empty document to insert (will be modified)
+
+        if(await collection.countDocuments() == 0){ //check if collection empty
+            doc = {part_id: 0, part_type_id, part_name, part_price}; //start at index 0
+        } else { //not empty
+            //query DB to find last record & imcrement index from there
+            const query = {};
+            const options = {
+                //sort by brand_id -> descending
+                sort: { "part_id": -1 }
+            };
+            latestRecord = await collection.findOne(query, options);
+            id = latestRecord.part + 1;
+            doc = {part_id : id, part_type_id, part_name, part_price};
+        }
+
+        //insert document
+        await collection.insertOne(doc);
+    } catch (e) {
+    console.error(e);
+    } finally {
+        await client.close();
+    }
+}
+
+
 
 //CAR READ OPERATIONS
 exports.getCar = async function(id){

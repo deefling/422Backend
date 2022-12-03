@@ -42,8 +42,22 @@ async function run(){
     await mongoDriver.addModelYear(4, "2018", "/images/aventadorMain.jpg", "/images/aventadorHead.jpg", "Has scissor doors", false, 33);
     // console.log(await mongoDriver.getModelYears());
 
+    //fill package with sample data
+    await mongoDriver.addPackage(0, "testpackage0", 15000.00);
+    await mongoDriver.addPackage(1, "testpackage1", 20000.00);
+    await mongoDriver.addPackage(2, "testpackage2", 50000.00);
+    await mongoDriver.addPackage(3, "testpackage3", 40000.00);
+    await mongoDriver.addPackage(4, "testpackage4", 80000.00);
+
+    //fill package detail with sample data
+    //await mongoDriver.addPackageDetail(0,0);
+
+
+
+
+
     //adding users
     await mongoDriver.addUser("root", "password");
     await mongoDriver.addUser("admin", "password");
-
+    
 }
