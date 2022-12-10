@@ -909,6 +909,8 @@ exports.updateUser = async function(json){
             phone_number: json.phone_number} 
         };
 
+        console.log(hash(json.password));
+
         await collection.updateOne(myquery, newvalues);
         return true;
     } catch (e) {
@@ -1059,5 +1061,5 @@ exists = async function(document, collection){
 }
 
 hash = function(str){
-    return createHash('sha256').update(stringify(str)).digest('hex');
+    return createHash('sha256').update(str).digest('hex');
 }
