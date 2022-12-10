@@ -15,6 +15,7 @@ images available in /images
         - Differentiate between admin & user (auth)
         - Input validations
             - NoSQL sanitization
+        - explain about proj expectations
 
     SLDC Doc (both groups)
         Decision making
