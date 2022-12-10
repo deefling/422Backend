@@ -1,6 +1,8 @@
 const express = require('express');
 const server = express();
 
+require('dotenv/config');
+
 //allow cross-origin requests
 const cors = require('cors');
 server.use(cors({
@@ -22,7 +24,7 @@ const mongoDriver = require('./mongoDriver');
 //need to modify it to only allow requests from certain IPs and from vercel app
 server.use(function apiSecurity(req, res, next){
     let host = req.header("x-api-key");
-    if(host == "mmm"){
+    if(host == process.env.APIKEY){
         next();
     } else {
         var doc = {error:"unauthorized host detected"};
