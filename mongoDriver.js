@@ -223,7 +223,7 @@ exports.addPart = async function(part_type_id, part_name){//good example to copy
                 sort: { "part_id": -1 }
             };
             latestRecord = await collection.findOne(query, options);
-            id = latestRecord.part + 1;
+            id = latestRecord.part_id + 1;
             doc = {part_id : id, part_type_id, part_name};
         }
 
@@ -518,6 +518,53 @@ exports.getModelYears = async function(){
         const collection = db.collection('model_year');
 
         const findResult = await collection.find({}).toArray();
+        return findResult;
+    } catch (e) {
+        console.error(e);
+    } finally {
+        await client.close();
+    }
+}
+
+exports.getFilters = async function(){
+    try{
+        await client.connect();
+        const db = client.db("cars");
+
+        const findResult = {brands:[], categories:[], engines:[]};
+
+        const brands = db.collection('brand');
+        const findBrands = await brands.find({}).toArray();
+        for (var i = 0;i<findBrands.length;i++){
+            var tempBrand = {
+                id: findBrands[i]['brand_id'],
+                name: findBrands[i]['brand_name']
+            }
+            findResult['brands'].push(tempBrand);
+        }
+
+        const categories = db.collection('car_type');
+        const findCategories = await categories.find({}).toArray();
+        for (var i = 0;i<findCategories.length;i++){
+            var tempCategory = {
+                id: findCategories[i]['car_type_id'],
+                name: findCategories[i]['car_type_name']
+            }
+            findResult['categories'].push(tempCategory);
+        }
+
+        const partType = db.collection('part_type');
+        const findPartType = await partType.find({part_type_name:"Engine"}).toArray();
+        const parts = db.collection('part');
+        const findEngines = await parts.find({part_type_id:findPartType[0]['part_type_id']}).toArray();
+        for (var i = 0;i<findEngines.length;i++){
+            var tempEngine = {
+                id: findEngines[i]['part_id'],
+                name: findEngines[i]['part_name']
+            }
+            findResult['engines'].push(tempEngine);
+        }
+ 
         return findResult;
     } catch (e) {
         console.error(e);

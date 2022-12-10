@@ -78,6 +78,10 @@ function api() {
         mongoDriver.getFeaturedCars().then( (value) => {res.json(value);},);
     })
 
+    server.get('/getFilters', (req, res) => {
+        mongoDriver.getFilters().then ( (value) => {res.json(value);},);
+    })
+
     //CAR ADD
     server.put("/addCar", (req, res) => {
         mongoDriver.addModelYear(req.body.model_id, req.body.year, req.body.main_image, req.body.header_image, req.body.description, req.body.featured, req.body.quantity)
