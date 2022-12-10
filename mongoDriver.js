@@ -1,6 +1,7 @@
 const { MongoClient } = require('mongodb');
 const { ForeignKeyError } = require('./errors/ForeignKeyError.js');
 const { createHash } = require('crypto');
+require('dotenv/config');
 
 
 //this is the connection info for our specific DB
@@ -458,6 +459,9 @@ exports.getFeaturedCars = async function(){
         if(car.featured){
             featuredCars.cars.push(car);
         }
+        if(featuredCars.length == 3){
+            break;
+        }
     }
 
     return featuredCars;
@@ -719,6 +723,38 @@ exports.updateCar = async function(json){
         await client.close();
     }
 }
+
+exports.deleteModelYear = async function (id){
+    try{
+        await client.connect();
+        const db = client.db("cars");
+        var collection = db.collection('model_year');
+        var package_collection = db.collection('package');
+        var package_detail_collection = db.collection('package_detail');
+        var query = { model_year_id: parseInt(id) };
+
+        var packages = await package_collection.find(query).toArray();
+        console.log(packages);
+        console.log(query);
+
+        for(let i = 0 ; i < packages.length; i++){
+            await package_detail_collection.deleteMany({package_id: packages[i].package_id});
+        }
+
+        await package_collection.deleteMany(query);
+
+        await collection.deleteOne(query);
+        
+        return true;
+    } catch (e) {
+        console.error(e);
+        return false;
+    } finally {
+        await client.close();
+    }
+}
+
+
 
 ///USER ADD OPERATIONS///
 exports.addUser = async function(user, pw){

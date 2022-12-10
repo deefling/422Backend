@@ -169,6 +169,12 @@ function api() {
         )
     })
 
+    //CAR DELETE
+    server.delete('/deleteCar/:id', (req, res) => {
+        var id = req.params.id;
+        mongoDriver.deleteModelYear(id).then ( (value) => {res.json(value);},);
+    })
+
     ///USER INFO///
 
     server.post("/checkLogin", (req, res) =>{
