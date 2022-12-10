@@ -1,7 +1,7 @@
 const { MongoClient } = require('mongodb');
 const { ForeignKeyError } = require('./errors/ForeignKeyError.js');
 const { createHash } = require('crypto');
-require('dotenv/config');
+
 
 //this is the connection info for our specific DB
 //DB name = 422database
@@ -805,7 +805,7 @@ exports.logError = async (error) => {
     }
 }
 
-exports.logCommunication = async (doc) => {
+exports.logCommunication = async (req, res) => {
     try{
         await client.connect();
         const db = client.db("communications");
@@ -813,15 +813,16 @@ exports.logCommunication = async (doc) => {
         var doc = {};
 
         if(await collection.countDocuments() == 0){
-            doc = {communication_id: 0, log:doc, timestamp: Date.now()};
+            doc = {error_id: 0, [error.name]: error.message, timestamp: Date.now()};
         } else {
             const query = {};
             const options = {
-                sort: { "communication_id": -1 }
+                //sort by user_id -> descending
+                sort: { "error_id": -1 }
             };
             latestRecord = await collection.findOne(query, options);
-            id = latestRecord.communication_id + 1;
-            doc = {communication_id: id, log: doc, timestamp:Date.now()};
+            id = latestRecord.error_id + 1;
+            doc = {error_id: id, [error.name]: error.message, timestamp:Date.now()};
         }
 
         await collection.insertOne(doc);
