@@ -1,6 +1,7 @@
-const { json } = require('express');
 const { MongoClient } = require('mongodb');
 const { ForeignKeyError } = require('./errors/ForeignKeyError.js');
+const { createHash } = require('crypto');
+
 
 //this is the connection info for our specific DB
 //DB name = 422database
@@ -150,7 +151,7 @@ exports.addModelYear = async function(model_id, year, main_image, header_image, 
             doc = {model_year_id: id, model_id, year, main_image, header_image, description, featured, quantity};
         }
         var value = await collection.insertOne(doc); 
-        console.log(value.acknowledged);
+        // console.log(value.acknowledged);
         // TODO - catch any error here?
         return value.acknowledged;
     } catch (e) {
@@ -375,6 +376,78 @@ exports.getCars = async function(){
     } finally {
         await client.close();
     }
+}
+
+exports.getCarsByProperties = async function(doc){
+    var cars = await this.getCars();
+    var result = cars.cars;
+
+    //check against brands
+    if(doc.brands != null){
+        let newResult = [];
+        result.forEach(car => {
+            doc.brands.forEach(brand =>{
+                if(brand == car.car_name.brand_id){
+                    newResult.push(car)
+                }
+            })
+        })
+        result = newResult
+    }
+
+    //check against models
+    if(doc.models != null){
+        let newResult = [];
+        result.forEach(car => {
+            doc.models.forEach(model =>{
+                if(model == car.car_name.model_id){
+                    newResult.push(car)
+                }
+            })
+        })
+        result = newResult
+    }
+
+    //check against years
+    if(doc.years != null){
+        let newResult = [];
+        result.forEach(car => {
+            doc.years.forEach(year =>{
+                if(year == car.car_name.year){
+                    newResult.push(car)
+                }
+            })
+        })
+        result = newResult
+    }
+
+    //check against categories
+    if(doc.categories != null){
+        let newResult = [];
+        result.forEach(car => {
+            doc.categories.forEach(category =>{
+                if(category == car.category_id){
+                    newResult.push(car)
+                }
+            })
+        })
+        result = newResult
+    }
+
+    //TODO - check against engine types
+    // if(doc.categories != null){
+    //     let newResult = [];
+    //     result.forEach(car => {
+    //         doc.categories.forEach(category =>{
+    //             if(category == car.category_id){
+    //                 newResult.push(car)
+    //             }
+    //         })
+    //     })
+    //     result = newResult
+    // } 
+
+    return {cars: result};
 }
 
 exports.getFeaturedCars = async function(){
@@ -629,7 +702,7 @@ phone number
         var doc = {};
 
         if(await collection.countDocuments() == 0){
-            doc = {user_id: 0, username: user, password: pw};
+            doc = {user_id: 0, username: user, password: hash(pw)};
         } else {
             const query = {};
             const options = {
@@ -638,7 +711,7 @@ phone number
             };
             latestRecord = await collection.findOne(query, options);
             id = latestRecord.user_id + 1;
-            doc = {user_id: id,  username: user, password: pw};
+            doc = {user_id: id,  username: user, password: hash(pw)};
         }
 
         await collection.insertOne(doc);
@@ -655,7 +728,7 @@ exports.checkUser = async function(user, pw){
         const db = client.db("users");
         const collection = db.collection('user');
 
-        doc = {username: user, password: pw};
+        doc = {username: user, password: hash(pw)};
         const findResult = await collection.find(doc).toArray();
         if(findResult.length == 1){
             return findResult[0];
@@ -710,4 +783,8 @@ exists = async function(document, collection){
         console.error(e);
     }
     return false;
+}
+
+hash = function(str){
+    return createHash('sha256').update(str).digest('hex');
 }

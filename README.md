@@ -10,6 +10,12 @@ images available in /images
 //TODO
     'Delete' operations for car
     Add & Delete car on website
+    Maximum 3 featured cars
+
+    Filters:
+        Brands
+        Category
+        engine types
     
     Finish user table
     API operations for user tables
@@ -39,5 +45,3 @@ images available in /images
 
     API Security
         Check req origins
-        Don't expose private data
-        Hash private data like passwords

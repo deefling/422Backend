@@ -5,6 +5,7 @@ const server = express();
 const cors = require('cors');
 server.use(cors({
     origin: '*'
+    //TODO - change this to vercel at the very end
 }));
 
 //allow API users to access images directory
@@ -21,6 +22,7 @@ const mongoDriver = require('./mongoDriver');
 //need to modify it to only allow requests from certain IPs and from vercel app
 server.use(function apiSecurity(req, res, next){
     var host = req.hostname;
+    console.log(host);
     if(host === "localhost" || host === "422backend.cyclic.app"){
         next();
     } else {
@@ -60,6 +62,11 @@ function api() {
 
     server.get('/getCars', (req, res) => { 
         mongoDriver.getCars().then( (value) => {res.json(value);},);
+    })
+
+    server.get('/getCarsByProperties', (req, res) => { 
+        var doc = req.body;
+        mongoDriver.getCarsByProperties(doc).then( (value) => {res.json(value);},);
     })
 
     server.get('/getBrands', (req, res) => { 
