@@ -599,6 +599,40 @@ exports.getModelYears = async function(){
     }
 }
 
+exports.getPackages = async function(year_id){
+    try{
+        await client.connect();
+        const db = client.db("cars");
+        const result = [];
+
+        const package = db.collection('package');
+        const findPackage = await package.find({model_year_id:year_id}).toArray();
+        for (var i = 0;i<findPackage.length;i++){
+            var tempData = {
+                name: findPackage[i]['package_name'],
+                price: findPackage[i]['base_price'],
+                parts:[]
+            }
+
+            const details = db.collection('package_detail');
+            const findDetails = await details.find({package_id:findPackage[i]['package_id']}).toArray();
+            for (var j = 0;j<findDetails.length;j++){
+                const parts = db.collection('part');
+                const findParts = await parts.find({part_id:findDetails[j]['part_id']}).toArray();
+                tempData['parts'].push(findParts[0]['part_name']);
+            }
+
+            result.push(tempData);
+        }
+
+        return result;
+    } catch (e) {
+        console.error(e);
+    } finally {
+        await client.close();
+    }
+}
+
 exports.getFilters = async function(){
     try{
         await client.connect();
@@ -776,6 +810,7 @@ exports.logCommunication = async (doc) => {
         await client.connect();
         const db = client.db("communications");
         const collection = db.collection('communication');
+        var doc = {};
 
         if(await collection.countDocuments() == 0){
             doc = {communication_id: 0, log:doc, timestamp: Date.now()};
