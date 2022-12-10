@@ -43,17 +43,41 @@ async function run(){
     // console.log(await mongoDriver.getModelYears());
 
     //fill package with sample data
-    await mongoDriver.addPackage(0, "testpackage0", 15000.00);
-    await mongoDriver.addPackage(1, "testpackage1", 20000.00);
-    await mongoDriver.addPackage(2, "testpackage2", 50000.00);
-    await mongoDriver.addPackage(3, "testpackage3", 40000.00);
-    await mongoDriver.addPackage(4, "testpackage4", 80000.00);
+    await mongoDriver.addPackage(0, "Standard Civic Package", 15000);
+    await mongoDriver.addPackage(0, "Premium Civic Package", 25000);
+    await mongoDriver.addPackage(2, "Standard P1 Package", 22000);
+    await mongoDriver.addPackage(2, "Premium P1 Package", 30000);
+
 
     //fill package detail with sample data
-    //await mongoDriver.addPackageDetail(0,0);
+    await mongoDriver.addPackageDetail(0,0);
+    await mongoDriver.addPackageDetail(0,2);
+    await mongoDriver.addPackageDetail(0,6);
+    await mongoDriver.addPackageDetail(1,1);
+    await mongoDriver.addPackageDetail(1,3);
+    await mongoDriver.addPackageDetail(1,7);
+    await mongoDriver.addPackageDetail(2,0);
+    await mongoDriver.addPackageDetail(2,2);
+    await mongoDriver.addPackageDetail(2,6);
+    await mongoDriver.addPackageDetail(3,1);
+    await mongoDriver.addPackageDetail(3,3);
+    await mongoDriver.addPackageDetail(3,7);
 
+    //fill part with sample data
+    await mongoDriver.addPart(0, "2.0-liter four-cylinder");
+    await mongoDriver.addPart(0, "1.5-liter four-cylinder turbocharged");
+    await mongoDriver.addPart(1, "Steel Wheels");
+    await mongoDriver.addPart(1, "Alloy Wheels");
+    await mongoDriver.addPart(1, "Forged & Cast Wheels");
+    await mongoDriver.addPart(1, "Split Rim Wheels");
+    await mongoDriver.addPart(2, "Halogen headlights");
+    await mongoDriver.addPart(2, "LED headlights");
+    await mongoDriver.addPart(2, "HID headlights");
 
-
+    //fill part_type with sample data
+    await mongoDriver.addPartType("Engine");
+    await mongoDriver.addPartType("Wheels");
+    await mongoDriver.addPartType("Headlights");
 
 
     //adding users
