@@ -32,7 +32,7 @@ function commLogs(req, res, next) {
     return oldWrite.apply(res, arguments);
   };
 
-  res.end = function (chunk) {
+  res.end = async function (chunk) {
     if (chunk)
       chunks.push(chunk);
     var body = Buffer.concat(chunks).toString('utf8');
@@ -44,7 +44,7 @@ function commLogs(req, res, next) {
         payout: JSON.parse(body)
     };
     console.log(doc);
-    mongoDriver.logCommunication(doc);
+    await mongoDriver.logCommunication(doc);
 
     oldEnd.apply(res, arguments);
   };
