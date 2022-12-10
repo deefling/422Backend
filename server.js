@@ -3,6 +3,19 @@ const server = express();
 
 require('dotenv/config');
 
+const rateLimit = require('express-rate-limit')
+
+
+const limiter = rateLimit({
+	windowMs: 1 * 60 * 1000, // 1 minute
+	max: 100, // Limit each IP to 100 requests per `window` (here, per minute)
+	standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+	legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+})
+
+// Apply the rate limiting middleware to all requests
+server.use(limiter)
+
 //allow cross-origin requests
 const cors = require('cors');
 server.use(cors({
