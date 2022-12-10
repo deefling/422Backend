@@ -43,7 +43,7 @@ function commLogs(req, res, next) {
         x_api_key: req.rawHeaders[1],
         payout: JSON.parse(body)
     };
-    // console.log(doc);
+    console.log(doc);
     mongoDriver.logCommunication(doc);
 
     oldEnd.apply(res, arguments);
