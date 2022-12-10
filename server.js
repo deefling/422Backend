@@ -21,9 +21,8 @@ const mongoDriver = require('./mongoDriver');
 //TODO api security - don't think this actually blocks anything
 //need to modify it to only allow requests from certain IPs and from vercel app
 server.use(function apiSecurity(req, res, next){
-    var host = req.hostname;
-    console.log(host);
-    if(host === "localhost" || host === "422backend.cyclic.app"){
+    let host = req.header("x-api-key");
+    if(host == "mmm"){
         next();
     } else {
         var doc = {error:"unauthorized host detected"};
@@ -89,6 +88,10 @@ function api() {
 
     server.get('/getFeaturedCars', (req, res) => {
         mongoDriver.getFeaturedCars().then( (value) => {res.json(value);},);
+    })
+
+    server.get('/getFilters', (req, res) => {
+        mongoDriver.getFilters().then ( (value) => {res.json(value);},);
     })
 
     //CAR ADD
