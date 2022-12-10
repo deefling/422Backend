@@ -16,6 +16,49 @@ const limiter = rateLimit({
 // Apply the rate limiting middleware to all requests
 server.use(limiter)
 
+
+
+
+
+
+
+function commLogs(req, res, next) {
+  var oldWrite = res.write,
+      oldEnd = res.end;
+  var chunks = [];
+
+  res.write = function (chunk) {
+    chunks.push(chunk);
+    return oldWrite.apply(res, arguments);
+  };
+
+  res.end = function (chunk) {
+    if (chunk)
+      chunks.push(chunk);
+    var body = Buffer.concat(chunks).toString('utf8');
+    doc = {
+        url: req.url,
+        method: req.method,
+        host: req.hostname,
+        x_api_key: req.rawHeaders[1],
+        payout: JSON.parse(body)
+    };
+    // console.log(doc);
+    mongoDriver.logCommunication(doc);
+
+    oldEnd.apply(res, arguments);
+  };
+
+  next();
+}
+
+server.use(commLogs);
+
+
+
+
+
+
 //allow cross-origin requests
 const cors = require('cors');
 server.use(cors({
@@ -43,12 +86,6 @@ server.use(function apiSecurity(req, res, next){
         var doc = {error:"unauthorized host detected"};
         res.json(doc);
     }
-});
-
-server.use(function commLogs(req, res, next){
-    console.log(req);
-    // console.log(res.socket.rawHeaders.url);
-    next();
 });
 
 //activation of "main" method

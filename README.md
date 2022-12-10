@@ -20,7 +20,6 @@ images available in /images
     Finish user table
     API operations for user tables
 
-    Finish package tables
     API operations for package tables
 
     Finish purchase tables
@@ -37,11 +36,12 @@ images available in /images
 
     Data Validation
         Done on frontend?
+        need to sanitize against nosql attacks
 
-    Communication Logs
     Error Logs
         Error checking - return new errors instead of throwing
         Custom PK error? - for modelyear
 
-    API Security
-        Check req origins
+    test x-api-key logging
+
+    Sweep for TODOs
