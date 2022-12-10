@@ -1,7 +1,8 @@
 const { MongoClient } = require('mongodb');
 const { ForeignKeyError } = require('./errors/ForeignKeyError.js');
 const { createHash } = require('crypto');
-
+const { stringify } = require('querystring');
+require('dotenv/config');
 
 //this is the connection info for our specific DB
 //DB name = 422database
@@ -27,6 +28,8 @@ exports.resetDatabase = async function(){
         await db.collection("part_type").deleteMany();
         db = client.db("users");
         await db.collection("user").deleteMany();
+        db = client.db("orders");
+        await db.collection("order").deleteMany();
     } catch (e) {
         console.error(e);
     } finally {
@@ -270,8 +273,38 @@ exports.addPartType = async function(part_type_name){
                 sort: { "part_type_id": -1 }
             };
             latestRecord = await collection.findOne(query, options);
-            id = latestRecord.part + 1;
+            id = latestRecord.part_type_id + 1;
             doc = {part_type_id: id, part_type_name};
+        }
+
+        //insert document
+        await collection.insertOne(doc);
+    } catch (e) {
+    console.error(e);
+    } finally {
+        await client.close();
+    }
+}
+
+exports.addOrder = async function(user_id, model_year_id, package_id, date, package_price, discount, final_price){
+    try{
+        await client.connect();
+        const db = client.db("orders"); //select database
+        const collection = db.collection('order'); //select collection (table)
+        var doc = {}; //empty document to insert (will be modified)
+
+        if(await collection.countDocuments() == 0){ //check if collection empty
+            doc = {order_id: 0, user_id, model_year_id, package_id, date, package_price, discount, final_price}; //start at index 0
+        } else { //not empty
+            //query DB to find last record & imcrement index from there
+            const query = {};
+            const options = {
+                //sort by order_id -> descending
+                sort: { "order_id": -1 }
+            };
+            latestRecord = await collection.findOne(query, options);
+            id = latestRecord.order_id + 1;
+            doc = {order_id: id, user_id, model_year_id, package_id, date, package_price, discount, final_price};
         }
 
         //insert document
@@ -680,6 +713,51 @@ exports.getFilters = async function(){
     }
 }
 
+exports.getAllOrders = async function(){
+    try{
+        await client.connect();
+        const db = client.db("orders");
+        const collection = db.collection('order');
+
+        const findResult = await collection.find({}).toArray();
+        return {orders: findResult};
+    } catch (e) {
+        console.error(e);
+    } finally {
+        await client.close();
+    }
+}
+
+exports.getOrder = async function(id){
+    try{
+        await client.connect();
+        const db = client.db("orders");
+        const collection = db.collection('order');
+
+        const findResult = await collection.findOne({order_id: id});
+        return findResult;
+    } catch (e) {
+        console.error(e);
+    } finally {
+        await client.close();
+    }
+}
+
+exports.getUserOrders = async function(id){
+    try{
+        await client.connect();
+        const db = client.db("orders");
+        const collection = db.collection('order');
+
+        const findResult = await collection.find({user_id:id}).toArray();
+        return findResult;
+    } catch (e) {
+        console.error(e);
+    } finally {
+        await client.close();
+    }
+}
+
 //CAR UPDATE OPERATIONS
 // TODO - validate model_id
 exports.updateCar = async function(json){
@@ -721,14 +799,7 @@ exports.updateCar = async function(json){
 }
 
 ///USER ADD OPERATIONS///
-exports.addUser = async function(user, pw){
-/*Changes
-* username -> email
-user_type
-firstname & lastname
-phone number
- */
-
+exports.addUser = async function(username, admin, firstname, lastname, pw, phone_number){
     try{
         await client.connect();
         const db = client.db("users");
@@ -736,7 +807,7 @@ phone number
         var doc = {};
 
         if(await collection.countDocuments() == 0){
-            doc = {user_id: 0, username: user, password: hash(pw)};
+            doc = {user_id: 0, username, admin, firstname, lastname, password: hash(pw), phone_number};
         } else {
             const query = {};
             const options = {
@@ -745,12 +816,14 @@ phone number
             };
             latestRecord = await collection.findOne(query, options);
             id = latestRecord.user_id + 1;
-            doc = {user_id: id,  username: user, password: hash(pw)};
+            doc = {user_id: id, username, admin, firstname, lastname, password: hash(pw), phone_number};
         }
 
         await collection.insertOne(doc);
+        return true;
     } catch (e) {
     console.error(e);
+    return false;
     } finally {
         await client.close();
     }
@@ -832,6 +905,37 @@ exports.logCommunication = async (doc) => {
     }
 }
 
+//add orders
+exports.addOrder = async function(user_id, model_year_id, package_id, date, package_price, discount, final_price){
+    try{
+        await client.connect();
+        const db = client.db("orders");
+        const collection = db.collection('order');
+        var doc = {};
+
+        if(await collection.countDocuments() == 0){
+            doc = {order_id: 0, user_id, model_year_id, package_id, date, package_price, discount, final_price};
+        } else {
+            const query = {};
+            const options = {
+                //sort by order_id -> descending
+                sort: { "order_id": -1 }
+            };
+            latestRecord = await collection.findOne(query, options);
+            id = latestRecord.order_id + 1;
+            doc = {order_id: id, user_id, model_year_id, package_id, date, package_price, discount, final_price};
+        }
+
+        await collection.insertOne(doc);
+        let inserted = await collection.findOne({order_id : doc.order_id})
+        return inserted;
+    } catch (e) {
+    console.error(e);
+    } finally {
+        await client.close();
+    }
+}
+
 
 ///UTILITY FUNCTIONS///
 exists = async function(document, collection){
@@ -847,5 +951,5 @@ exists = async function(document, collection){
 }
 
 hash = function(str){
-    return createHash('sha256').update(str).digest('hex');
+    return createHash('sha256').update(stringify(str)).digest('hex');
 }

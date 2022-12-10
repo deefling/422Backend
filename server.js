@@ -150,6 +150,18 @@ function api() {
         mongoDriver.getFilters().then ( (value) => {res.json(value);},);
     })
 
+    server.get('/getAllOrders', (req, res) => {
+        mongoDriver.getAllOrders().then ( (value) => {res.json(value);},);
+    })
+
+    server.get('/getOrder', (req, res) => {
+        mongoDriver.getOrder(req.body.order_id).then ( (value) => {res.json(value);},);
+    })
+
+    server.get('/getUserOrders', (req, res) => {
+        mongoDriver.getUserOrders(req.body.user_id).then ( (value) => {res.json(value);},);
+    })
+
     //CAR ADD
     server.put("/addCar", (req, res) => {
         mongoDriver.addModelYear(req.body.model_id, req.body.year, req.body.main_image, req.body.header_image, req.body.description, req.body.featured, req.body.quantity)
@@ -162,6 +174,18 @@ function api() {
             });
     });
 
+    //ORDER ADD
+    server.put('/addOrder', (req, res) => {
+        mongoDriver.addOrder(req.body.user_id, req.body.model_year_id, req.body.package_id, req.body.date, req.body.package_price, req.body.discount, req.body.final_price)
+            .then((value) => {
+                if(value.name != null){
+                    res.json({[value.name]:value.message});
+                } else {
+                    res.json({inserted:true});
+                }
+            });
+    })
+
     //CAR UPDATE
     server.post("/updateCar", (req, res) =>{
         mongoDriver.updateCar(req.body).then(
@@ -170,7 +194,16 @@ function api() {
     })
 
     ///USER INFO///
-
+    server.put('/addUser', (req, res) => {
+        mongoDriver.addUser(req.body.username, req.body.admin, req.body.firstname, req.body.lastname, req.body.pw, req.body.phone_number)
+            .then((value) => {
+                if(value){
+                    res.json({inserted:true});
+                } else {
+                    res.json({error:"User could not be added"});
+                }
+            });
+    })
     server.post("/checkLogin", (req, res) =>{
         const user = req.body.username;
         const pw = req.body.password;

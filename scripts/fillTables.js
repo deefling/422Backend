@@ -81,7 +81,10 @@ async function run(){
 
 
     //adding users
-    await mongoDriver.addUser("root", "password");
-    await mongoDriver.addUser("admin", "password");
+    await mongoDriver.addUser("root", false, "Test", "User", "password", "010521355");
+    await mongoDriver.addUser("admin", true, "Real", "Admin", "password", "524655216");
+
+    //add default purchase
+    await mongoDriver.addOrder(0, 0, 1, "2022-12-10", 25000, 0, 25000);
     
 }
