@@ -805,7 +805,7 @@ exports.logError = async (error) => {
     }
 }
 
-exports.logCommunication = async (req, res) => {
+exports.logCommunication = async (doc) => {
     try{
         await client.connect();
         const db = client.db("communications");
@@ -813,16 +813,16 @@ exports.logCommunication = async (req, res) => {
         var doc = {};
 
         if(await collection.countDocuments() == 0){
-            doc = {error_id: 0, [error.name]: error.message, timestamp: Date.now()};
+            doc = {communication_id: 0, log: doc, timestamp: Date.now()};
         } else {
             const query = {};
             const options = {
                 //sort by user_id -> descending
-                sort: { "error_id": -1 }
+                sort: { "communication_id": -1 }
             };
             latestRecord = await collection.findOne(query, options);
-            id = latestRecord.error_id + 1;
-            doc = {error_id: id, [error.name]: error.message, timestamp:Date.now()};
+            id = latestRecord.communication_id + 1;
+            doc = {communication_id: id, log: doc, timestamp:Date.now()};
         }
 
         await collection.insertOne(doc);
