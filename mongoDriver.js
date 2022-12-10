@@ -7,8 +7,8 @@ const { createHash } = require('crypto');
 //DB name = 422database
 //user = root
 //pw = TargaryensFTW
-const MONGO_CONNECTION_STRING = "mongodb+srv://root:TargaryensFTW@422databse.axyczfl.mongodb.net/?retryWrites=true&w=majority";
-const uri = MONGO_CONNECTION_STRING;
+// const uri = "mongodb+srv://root:TargaryensFTW@422databse.axyczfl.mongodb.net/?retryWrites=true&w=majority";
+const uri = process.env.MONGOCONNECTIONSTRING;
 const client = new MongoClient(uri);
 
 //clears the database for the purpose of a fresh batch of data
