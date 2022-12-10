@@ -380,7 +380,6 @@ exports.getCars = async function(){
 exports.getCarsByProperties = async function(doc){
     var cars = await this.getCars();
     var result = cars.cars;
-    console.log(result);
 
     //check against brands
     if(doc.brands != null){

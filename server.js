@@ -21,6 +21,7 @@ const mongoDriver = require('./mongoDriver');
 //need to modify it to only allow requests from certain IPs and from vercel app
 server.use(function apiSecurity(req, res, next){
     var host = req.hostname;
+    console.log(host);
     if(host === "localhost" || host === "422backend.cyclic.app"){
         next();
     } else {
