@@ -4,6 +4,7 @@ const { createHash } = require('crypto');
 const { stringify } = require('querystring');
 require('dotenv/config');
 
+
 //this is the connection info for our specific DB
 //DB name = 422database
 //user = root
@@ -797,6 +798,38 @@ exports.updateCar = async function(json){
         await client.close();
     }
 }
+
+exports.deleteModelYear = async function (id){
+    try{
+        await client.connect();
+        const db = client.db("cars");
+        var collection = db.collection('model_year');
+        var package_collection = db.collection('package');
+        var package_detail_collection = db.collection('package_detail');
+        var query = { model_year_id: parseInt(id) };
+
+        var packages = await package_collection.find(query).toArray();
+        console.log(packages);
+        console.log(query);
+
+        for(let i = 0 ; i < packages.length; i++){
+            await package_detail_collection.deleteMany({package_id: packages[i].package_id});
+        }
+
+        await package_collection.deleteMany(query);
+
+        await collection.deleteOne(query);
+        
+        return true;
+    } catch (e) {
+        console.error(e);
+        return false;
+    } finally {
+        await client.close();
+    }
+}
+
+
 
 ///USER ADD OPERATIONS///
 exports.addUser = async function(username, admin, firstname, lastname, pw, phone_number){

@@ -193,6 +193,12 @@ function api() {
         )
     })
 
+    //CAR DELETE
+    server.delete('/deleteCar/:id', (req, res) => {
+        var id = req.params.id;
+        mongoDriver.deleteModelYear(id).then ( (value) => {res.json(value);},);
+    })
+
     ///USER INFO///
     server.put('/addUser', (req, res) => {
         mongoDriver.addUser(req.body.username, req.body.admin, req.body.firstname, req.body.lastname, req.body.pw, req.body.phone_number)

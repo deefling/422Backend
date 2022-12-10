@@ -8,22 +8,10 @@ npm run reset -> fresh database
 images available in /images 
 
 //TODO
-    'Delete' operations for car
-    Add & Delete car on website
-    Maximum 3 featured cars
+    Add & Delete car on website - request to frontend
 
-    Filters:
-        Brands
-        Category
-        engine types
-    
     Finish user table
     API operations for user tables
-
-    API operations for package tables
-
-    Finish purchase tables
-    API operations for purchases
 
     SLDC Doc (both groups)
         Decision making
@@ -38,10 +26,13 @@ images available in /images
         Done on frontend?
         need to sanitize against nosql attacks
 
-    Error Logs
+    Error 
+        Stress test API calls
+        standardize outputs
         Error checking - return new errors instead of throwing
         Custom PK error? - for modelyear
 
     test x-api-key logging
+        get https when it wasnt there
 
     Sweep for TODOs
