@@ -862,6 +862,81 @@ exports.addUser = async function(username, admin, firstname, lastname, pw, phone
     }
 }
 
+exports.getAllUsers = async function(){
+    try{
+        await client.connect();
+        const db = client.db("users");
+        const collection = db.collection('user');
+
+        const findResult = await collection.find({}).toArray();
+        return {users: findResult};
+    } catch (e) {
+        console.error(e);
+    } finally {
+        await client.close();
+    }
+}
+
+exports.getUser = async function(id){
+    try{
+        await client.connect();
+        const db = client.db("users");
+        const collection = db.collection('user');
+
+        const findResult = await collection.findOne({user_id: id});
+        return findResult;
+    } catch (e) {
+        console.error(e);
+    } finally {
+        await client.close();
+    }
+}
+
+exports.updateUser = async function(json){
+    try{
+        await client.connect();
+        const db = client.db("users");
+        var collection = db.collection('user');
+
+        var myquery = { user_id: json.user_id };
+    
+        var newvalues = { $set: {
+            username: json.username, 
+            admin: json.admin,
+            firstname: json.firstname,
+            lastname: json.lastname,
+            password: hash(json.password),
+            phone_number: json.phone_number} 
+        };
+
+        await collection.updateOne(myquery, newvalues);
+        return true;
+    } catch (e) {
+        console.error(e);
+        return false;
+    } finally {
+        await client.close();
+    }
+}
+
+exports.deleteUser = async function(id){
+    try{
+        await client.connect();
+        const db = client.db("users");
+        var collection = db.collection('user');
+        var query = { user_id: parseInt(id) };
+
+        await collection.deleteOne(query);
+        
+        return true;
+    } catch (e) {
+        console.error(e);
+        return false;
+    } finally {
+        await client.close();
+    }
+}
+
 exports.checkUser = async function(user, pw){
     try{
         await client.connect();

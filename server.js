@@ -200,6 +200,14 @@ function api() {
     })
 
     ///USER INFO///
+    server.get('/getAllUsers', (req, res) => {
+        mongoDriver.getAllUsers().then ( (value) => {res.json(value);},);
+    })
+
+    server.get('/getUser', (req, res) => {
+        mongoDriver.getUser(req.body.user_id).then ( (value) => {res.json(value);},);
+    })
+
     server.put('/addUser', (req, res) => {
         mongoDriver.addUser(req.body.username, req.body.admin, req.body.firstname, req.body.lastname, req.body.pw, req.body.phone_number)
             .then((value) => {
@@ -210,6 +218,19 @@ function api() {
                 }
             });
     })
+
+    server.post("/updateUser", (req, res) =>{
+        mongoDriver.updateUser(req.body).then(
+            (value) => {res.json({updated:value});},
+        )
+    })
+
+    server.delete('/deleteUser/:id', (req, res) => {
+        var id = req.params.id;
+        mongoDriver.deleteUser(id).then ( (value) => {res.json(value);},);
+    })
+
+
     server.post("/checkLogin", (req, res) =>{
         const user = req.body.username;
         const pw = req.body.password;
