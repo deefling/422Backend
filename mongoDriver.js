@@ -3,13 +3,12 @@ const { ForeignKeyError } = require('./errors/ForeignKeyError.js');
 const { createHash } = require('crypto');
 require('dotenv/config');
 
-
 //this is the connection info for our specific DB
 //DB name = 422database
 //user = root
 //pw = TargaryensFTW
-// const MONGO_CONNECTION_STRING = "mongodb+srv://root:TargaryensFTW@422databse.axyczfl.mongodb.net/?retryWrites=true&w=majority";
-const uri = process.env.MONGOCONNECTIONSTRING;
+const uri = "mongodb+srv://root:TargaryensFTW@422databse.axyczfl.mongodb.net/?retryWrites=true&w=majority";
+// const uri = process.env.MONGOCONNECTIONSTRING;
 const client = new MongoClient(uri);
 
 //clears the database for the purpose of a fresh batch of data
