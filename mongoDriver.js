@@ -810,7 +810,6 @@ exports.logCommunication = async (doc) => {
         await client.connect();
         const db = client.db("communications");
         const collection = db.collection('communication');
-        var doc = {};
 
         if(await collection.countDocuments() == 0){
             doc = {communication_id: 0, log: doc, timestamp: Date.now()};
