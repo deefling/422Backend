@@ -1,10 +1,69 @@
 const express = require('express');
 const server = express();
 
+require('dotenv/config');
+
+const rateLimit = require('express-rate-limit')
+
+
+const limiter = rateLimit({
+	windowMs: 1 * 60 * 1000, // 1 minute
+	max: 100, // Limit each IP to 100 requests per `window` (here, per minute)
+	standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+	legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+})
+
+// Apply the rate limiting middleware to all requests
+server.use(limiter)
+
+
+
+
+
+
+
+function commLogs(req, res, next) {
+  var oldWrite = res.write,
+      oldEnd = res.end;
+  var chunks = [];
+
+  res.write = function (chunk) {
+    chunks.push(chunk);
+    return oldWrite.apply(res, arguments);
+  };
+
+  res.end = async function (chunk) {
+    if (chunk)
+      chunks.push(chunk);
+    var body = Buffer.concat(chunks).toString('utf8');
+    doc = {
+        url: req.url,
+        method: req.method,
+        host: req.hostname,
+        x_api_key: req.rawHeaders[1],
+        payout: JSON.parse(body)
+    };
+    // console.log(doc);
+    await mongoDriver.logCommunication(doc);
+
+    oldEnd.apply(res, arguments);
+  };
+
+  next();
+}
+
+server.use(commLogs);
+
+
+
+
+
+
 //allow cross-origin requests
 const cors = require('cors');
 server.use(cors({
     origin: '*'
+    //TODO - change this to vercel at the very end
 }));
 
 //allow API users to access images directory
@@ -20,8 +79,8 @@ const mongoDriver = require('./mongoDriver');
 //TODO api security - don't think this actually blocks anything
 //need to modify it to only allow requests from certain IPs and from vercel app
 server.use(function apiSecurity(req, res, next){
-    var host = req.hostname;
-    if(host === "localhost" || host === "422backend.cyclic.app"){
+    let host = req.header("x-api-key");
+    if(host == process.env.APIKEY){
         next();
     } else {
         var doc = {error:"unauthorized host detected"};
@@ -64,7 +123,6 @@ function api() {
 
     server.get('/getCarsByProperties', (req, res) => { 
         var doc = req.body;
-        console.log(req.body);
         mongoDriver.getCarsByProperties(doc).then( (value) => {res.json(value);},);
     })
 
@@ -84,6 +142,26 @@ function api() {
         mongoDriver.getFeaturedCars().then( (value) => {res.json(value);},);
     })
 
+    server.get('/getPackages', (req, res) => {
+        mongoDriver.getPackages(req.body.year_id).then ( (value) => {res.json(value);},);
+    })
+
+    server.get('/getFilters', (req, res) => {
+        mongoDriver.getFilters().then ( (value) => {res.json(value);},);
+    })
+
+    server.get('/getAllOrders', (req, res) => {
+        mongoDriver.getAllOrders().then ( (value) => {res.json(value);},);
+    })
+
+    server.get('/getOrder', (req, res) => {
+        mongoDriver.getOrder(req.body.order_id).then ( (value) => {res.json(value);},);
+    })
+
+    server.get('/getUserOrders', (req, res) => {
+        mongoDriver.getUserOrders(req.body.user_id).then ( (value) => {res.json(value);},);
+    })
+
     //CAR ADD
     server.put("/addCar", (req, res) => {
         mongoDriver.addModelYear(req.body.model_id, req.body.year, req.body.main_image, req.body.header_image, req.body.description, req.body.featured, req.body.quantity)
@@ -96,6 +174,18 @@ function api() {
             });
     });
 
+    //ORDER ADD
+    server.put('/addOrder', (req, res) => {
+        mongoDriver.addOrder(req.body.user_id, req.body.model_year_id, req.body.package_id, req.body.date, req.body.package_price, req.body.discount, req.body.final_price)
+            .then((value) => {
+                if(value.name != null){
+                    res.json({[value.name]:value.message});
+                } else {
+                    res.json({inserted:true});
+                }
+            });
+    })
+
     //CAR UPDATE
     server.post("/updateCar", (req, res) =>{
         mongoDriver.updateCar(req.body).then(
@@ -103,7 +193,43 @@ function api() {
         )
     })
 
+    //CAR DELETE
+    server.delete('/deleteCar/:id', (req, res) => {
+        var id = req.params.id;
+        mongoDriver.deleteModelYear(id).then ( (value) => {res.json(value);},);
+    })
+
     ///USER INFO///
+    server.get('/getAllUsers', (req, res) => {
+        mongoDriver.getAllUsers().then ( (value) => {res.json(value);},);
+    })
+
+    server.get('/getUser', (req, res) => {
+        mongoDriver.getUser(req.body.user_id).then ( (value) => {res.json(value);},);
+    })
+
+    server.put('/addUser', (req, res) => {
+        mongoDriver.addUser(req.body.username, req.body.admin, req.body.firstname, req.body.lastname, req.body.pw, req.body.phone_number)
+            .then((value) => {
+                if(value){
+                    res.json({inserted:true});
+                } else {
+                    res.json({error:"User could not be added"});
+                }
+            });
+    })
+
+    server.post("/updateUser", (req, res) =>{
+        mongoDriver.updateUser(req.body).then(
+            (value) => {res.json({updated:value});},
+        )
+    })
+
+    server.delete('/deleteUser/:id', (req, res) => {
+        var id = req.params.id;
+        mongoDriver.deleteUser(id).then ( (value) => {res.json(value);},);
+    })
+
 
     server.post("/checkLogin", (req, res) =>{
         const user = req.body.username;

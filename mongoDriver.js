@@ -1,13 +1,16 @@
-const { json } = require('express');
 const { MongoClient } = require('mongodb');
 const { ForeignKeyError } = require('./errors/ForeignKeyError.js');
+const { GenericError } = require('./errors/GenericError.js');
+const { createHash } = require('crypto');
+require('dotenv/config');
+
 
 //this is the connection info for our specific DB
 //DB name = 422database
 //user = root
 //pw = TargaryensFTW
-const MONGO_CONNECTION_STRING = "mongodb+srv://root:TargaryensFTW@422databse.axyczfl.mongodb.net/?retryWrites=true&w=majority";
-const uri = MONGO_CONNECTION_STRING;
+// const uri = "mongodb+srv://root:TargaryensFTW@422databse.axyczfl.mongodb.net/?retryWrites=true&w=majority";
+const uri = process.env.MONGOCONNECTIONSTRING;
 const client = new MongoClient(uri);
 
 //clears the database for the purpose of a fresh batch of data
@@ -26,6 +29,8 @@ exports.resetDatabase = async function(){
         await db.collection("part_type").deleteMany();
         db = client.db("users");
         await db.collection("user").deleteMany();
+        db = client.db("orders");
+        await db.collection("order").deleteMany();
     } catch (e) {
         console.error(e);
     } finally {
@@ -150,7 +155,7 @@ exports.addModelYear = async function(model_id, year, main_image, header_image, 
             doc = {model_year_id: id, model_id, year, main_image, header_image, description, featured, quantity};
         }
         var value = await collection.insertOne(doc); 
-        console.log(value.acknowledged);
+        // console.log(value.acknowledged);
         // TODO - catch any error here?
         return value.acknowledged;
     } catch (e) {
@@ -223,7 +228,7 @@ exports.addPart = async function(part_type_id, part_name){//good example to copy
                 sort: { "part_id": -1 }
             };
             latestRecord = await collection.findOne(query, options);
-            id = latestRecord.part + 1;
+            id = latestRecord.part_id + 1;
             doc = {part_id : id, part_type_id, part_name};
         }
 
@@ -269,8 +274,38 @@ exports.addPartType = async function(part_type_name){
                 sort: { "part_type_id": -1 }
             };
             latestRecord = await collection.findOne(query, options);
-            id = latestRecord.part + 1;
+            id = latestRecord.part_type_id + 1;
             doc = {part_type_id: id, part_type_name};
+        }
+
+        //insert document
+        await collection.insertOne(doc);
+    } catch (e) {
+    console.error(e);
+    } finally {
+        await client.close();
+    }
+}
+
+exports.addOrder = async function(user_id, model_year_id, package_id, date, package_price, discount, final_price){
+    try{
+        await client.connect();
+        const db = client.db("orders"); //select database
+        const collection = db.collection('order'); //select collection (table)
+        var doc = {}; //empty document to insert (will be modified)
+
+        if(await collection.countDocuments() == 0){ //check if collection empty
+            doc = {order_id: 0, user_id, model_year_id, package_id, date, package_price, discount, final_price}; //start at index 0
+        } else { //not empty
+            //query DB to find last record & imcrement index from there
+            const query = {};
+            const options = {
+                //sort by order_id -> descending
+                sort: { "order_id": -1 }
+            };
+            latestRecord = await collection.findOne(query, options);
+            id = latestRecord.order_id + 1;
+            doc = {order_id: id, user_id, model_year_id, package_id, date, package_price, discount, final_price};
         }
 
         //insert document
@@ -285,7 +320,8 @@ exports.addPartType = async function(part_type_name){
 
 //CAR READ OPERATIONS
 exports.getCar = async function(id){
-    await client.connect();
+    try{
+        await client.connect();
         const db = client.db("cars");
         const model_year_collection = db.collection('model_year');
         const model_collection = db.collection('model');
@@ -294,15 +330,19 @@ exports.getCar = async function(id){
 
         var query = {model_year_id: parseInt(id)}
         var model_year_data = await model_year_collection.findOne(query);
+        if(model_year_data == null){return {error: "Car ID not found"}}
 
         query = {model_id : model_year_data.model_id};
         var model_data = await model_collection.findOne(query);
+        if(model_data == null){throw new ForeignKeyError("Model FK not found")}
 
         query = {brand_id : model_data.brand_id};
         var brand_data = await brand_collection.findOne(query);
+        if(brand_data == null){throw new ForeignKeyError("Brand FK not found")}
 
         query = {car_type_id : model_data.car_type_id};
         var car_type_data = await car_type_collection.findOne(query);
+        if(car_type_data == null){throw new ForeignKeyError("Car Type FK not found")}
 
         var tempCar = {
             car_id: model_year_data.model_year_id,
@@ -323,6 +363,12 @@ exports.getCar = async function(id){
         };
 
         return tempCar;
+    } catch (e){
+        new GenericError(e.message);
+        return {error: e.message}
+    } finally {
+        await client.close();
+    }
 }
 
 exports.getCars = async function(){
@@ -371,7 +417,7 @@ exports.getCars = async function(){
 
         return findResult;
     } catch (e) {
-        console.error(e);
+        throw new GenericError(e.message);
     } finally {
         await client.close();
     }
@@ -435,10 +481,11 @@ exports.getCarsByProperties = async function(doc){
     }
 
     //TODO - check against engine types
-    // if(doc.categories != null){
+    // if(doc.enginetypes != null){
     //     let newResult = [];
     //     result.forEach(car => {
-    //         doc.categories.forEach(category =>{
+            
+    //         doc.enginetypes.forEach(type =>{
     //             if(category == car.category_id){
     //                 newResult.push(car)
     //             }
@@ -451,6 +498,7 @@ exports.getCarsByProperties = async function(doc){
 }
 
 exports.getFeaturedCars = async function(){
+    try{
     var cars = await this.getCars();
     var featuredCars = {cars: []}
 
@@ -461,6 +509,14 @@ exports.getFeaturedCars = async function(){
     }
 
     return featuredCars;
+    } 
+    catch (e) {
+        new GenericError(e.message);
+        return {error: e.message}
+    }
+    finally {
+        await client.close()
+    }
 }
 
 exports.getBrand = async function(id){
@@ -599,6 +655,132 @@ exports.getModelYears = async function(){
     }
 }
 
+exports.getPackages = async function(year_id){
+    try{
+        await client.connect();
+        const db = client.db("cars");
+        const result = [];
+
+        const package = db.collection('package');
+        const findPackage = await package.find({model_year_id:year_id}).toArray();
+        for (var i = 0;i<findPackage.length;i++){
+            var tempData = {
+                name: findPackage[i]['package_name'],
+                price: findPackage[i]['base_price'],
+                parts:[]
+            }
+
+            const details = db.collection('package_detail');
+            const findDetails = await details.find({package_id:findPackage[i]['package_id']}).toArray();
+            for (var j = 0;j<findDetails.length;j++){
+                const parts = db.collection('part');
+                const findParts = await parts.find({part_id:findDetails[j]['part_id']}).toArray();
+                tempData['parts'].push(findParts[0]['part_name']);
+            }
+
+            result.push(tempData);
+        }
+
+        return result;
+    } catch (e) {
+        console.error(e);
+    } finally {
+        await client.close();
+    }
+}
+
+exports.getFilters = async function(){
+    try{
+        await client.connect();
+        const db = client.db("cars");
+
+        const findResult = {brands:[], categories:[], engines:[]};
+
+        const brands = db.collection('brand');
+        const findBrands = await brands.find({}).toArray();
+        for (var i = 0;i<findBrands.length;i++){
+            var tempBrand = {
+                id: findBrands[i]['brand_id'],
+                name: findBrands[i]['brand_name']
+            }
+            findResult['brands'].push(tempBrand);
+        }
+
+        const categories = db.collection('car_type');
+        const findCategories = await categories.find({}).toArray();
+        for (var i = 0;i<findCategories.length;i++){
+            var tempCategory = {
+                id: findCategories[i]['car_type_id'],
+                name: findCategories[i]['car_type_name']
+            }
+            findResult['categories'].push(tempCategory);
+        }
+
+        const partType = db.collection('part_type');
+        const findPartType = await partType.find({part_type_name:"Engine"}).toArray();
+        const parts = db.collection('part');
+        const findEngines = await parts.find({part_type_id:findPartType[0]['part_type_id']}).toArray();
+        for (var i = 0;i<findEngines.length;i++){
+            var tempEngine = {
+                id: findEngines[i]['part_id'],
+                name: findEngines[i]['part_name']
+            }
+            findResult['engines'].push(tempEngine);
+        }
+ 
+        return findResult;
+    } catch (e) {
+        console.error(e);
+    } finally {
+        await client.close();
+    }
+}
+
+exports.getAllOrders = async function(){
+    try{
+        await client.connect();
+        const db = client.db("orders");
+        const collection = db.collection('order');
+
+        const findResult = await collection.find({}).toArray();
+        return {orders: findResult};
+    } catch (e) {
+        console.error(e);
+    } finally {
+        await client.close();
+    }
+}
+
+exports.getOrder = async function(id){
+    try{
+        await client.connect();
+        const db = client.db("orders");
+        const collection = db.collection('order');
+
+        const findResult = await collection.findOne({order_id: id});
+        return findResult;
+    } catch (e) {
+        console.error(e);
+    } finally {
+        await client.close();
+    }
+}
+
+exports.getUserOrders = async function(id){
+    try{
+        await client.connect();
+        const db = client.db("orders");
+        const collection = db.collection('order');
+
+        const findResult = await collection.find({user_id:id}).toArray();
+        return findResult;
+    } catch (e) {
+        console.error(e);
+    } finally {
+        await client.close();
+    }
+}
+
 //CAR UPDATE OPERATIONS
 // TODO - validate model_id
 exports.updateCar = async function(json){
@@ -639,15 +821,40 @@ exports.updateCar = async function(json){
     }
 }
 
-///USER ADD OPERATIONS///
-exports.addUser = async function(user, pw){
-/*Changes
-* username -> email
-user_type
-firstname & lastname
-phone number
- */
+exports.deleteModelYear = async function (id){
+    try{
+        await client.connect();
+        const db = client.db("cars");
+        var collection = db.collection('model_year');
+        var package_collection = db.collection('package');
+        var package_detail_collection = db.collection('package_detail');
+        var query = { model_year_id: parseInt(id) };
 
+        var packages = await package_collection.find(query).toArray();
+        console.log(packages);
+        console.log(query);
+
+        for(let i = 0 ; i < packages.length; i++){
+            await package_detail_collection.deleteMany({package_id: packages[i].package_id});
+        }
+
+        await package_collection.deleteMany(query);
+
+        await collection.deleteOne(query);
+        
+        return true;
+    } catch (e) {
+        console.error(e);
+        return false;
+    } finally {
+        await client.close();
+    }
+}
+
+
+
+///USER ADD OPERATIONS///
+exports.addUser = async function(username, admin, firstname, lastname, pw, phone_number){
     try{
         await client.connect();
         const db = client.db("users");
@@ -655,7 +862,7 @@ phone number
         var doc = {};
 
         if(await collection.countDocuments() == 0){
-            doc = {user_id: 0, username: user, password: pw};
+            doc = {user_id: 0, username, admin, firstname, lastname, password: hash(pw), phone_number};
         } else {
             const query = {};
             const options = {
@@ -664,12 +871,91 @@ phone number
             };
             latestRecord = await collection.findOne(query, options);
             id = latestRecord.user_id + 1;
-            doc = {user_id: id,  username: user, password: pw};
+            doc = {user_id: id, username, admin, firstname, lastname, password: hash(pw), phone_number};
         }
 
         await collection.insertOne(doc);
+        return true;
     } catch (e) {
     console.error(e);
+    return false;
+    } finally {
+        await client.close();
+    }
+}
+
+exports.getAllUsers = async function(){
+    try{
+        await client.connect();
+        const db = client.db("users");
+        const collection = db.collection('user');
+
+        const findResult = await collection.find({}).toArray();
+        return {users: findResult};
+    } catch (e) {
+        console.error(e);
+    } finally {
+        await client.close();
+    }
+}
+
+exports.getUser = async function(id){
+    try{
+        await client.connect();
+        const db = client.db("users");
+        const collection = db.collection('user');
+
+        const findResult = await collection.findOne({user_id: id});
+        return findResult;
+    } catch (e) {
+        console.error(e);
+    } finally {
+        await client.close();
+    }
+}
+
+exports.updateUser = async function(json){
+    try{
+        await client.connect();
+        const db = client.db("users");
+        var collection = db.collection('user');
+
+        var myquery = { user_id: json.user_id };
+    
+        var newvalues = { $set: {
+            username: json.username, 
+            admin: json.admin,
+            firstname: json.firstname,
+            lastname: json.lastname,
+            password: hash(json.password),
+            phone_number: json.phone_number} 
+        };
+
+        console.log(hash(json.password));
+
+        await collection.updateOne(myquery, newvalues);
+        return true;
+    } catch (e) {
+        console.error(e);
+        return false;
+    } finally {
+        await client.close();
+    }
+}
+
+exports.deleteUser = async function(id){
+    try{
+        await client.connect();
+        const db = client.db("users");
+        var collection = db.collection('user');
+        var query = { user_id: parseInt(id) };
+
+        await collection.deleteOne(query);
+        
+        return true;
+    } catch (e) {
+        console.error(e);
+        return false;
     } finally {
         await client.close();
     }
@@ -681,7 +967,7 @@ exports.checkUser = async function(user, pw){
         const db = client.db("users");
         const collection = db.collection('user');
 
-        doc = {username: user, password: pw};
+        doc = {username: user, password: hash(pw)};
         const findResult = await collection.find(doc).toArray();
         if(findResult.length == 1){
             return findResult[0];
@@ -724,6 +1010,64 @@ exports.logError = async (error) => {
     }
 }
 
+exports.logCommunication = async (doc) => {
+    try{
+        await client.connect();
+        const db = client.db("communications");
+        const collection = db.collection('communication');
+
+        if(await collection.countDocuments() == 0){
+            doc = {communication_id: 0, log: doc, timestamp: Date.now()};
+        } else {
+            const query = {};
+            const options = {
+                //sort by user_id -> descending
+                sort: { "communication_id": -1 }
+            };
+            latestRecord = await collection.findOne(query, options);
+            id = latestRecord.communication_id + 1;
+            doc = {communication_id: id, log: doc, timestamp:Date.now()};
+        }
+
+        await collection.insertOne(doc);
+    } catch (e) {
+    console.error(e);
+    } finally {
+        await client.close();
+    }
+}
+
+//add orders
+exports.addOrder = async function(user_id, model_year_id, package_id, date, package_price, discount, final_price){
+    try{
+        await client.connect();
+        const db = client.db("orders");
+        const collection = db.collection('order');
+        var doc = {};
+
+        if(await collection.countDocuments() == 0){
+            doc = {order_id: 0, user_id, model_year_id, package_id, date, package_price, discount, final_price};
+        } else {
+            const query = {};
+            const options = {
+                //sort by order_id -> descending
+                sort: { "order_id": -1 }
+            };
+            latestRecord = await collection.findOne(query, options);
+            id = latestRecord.order_id + 1;
+            doc = {order_id: id, user_id, model_year_id, package_id, date, package_price, discount, final_price};
+        }
+
+        await collection.insertOne(doc);
+        let inserted = await collection.findOne({order_id : doc.order_id})
+        return inserted;
+    } catch (e) {
+    console.error(e);
+    } finally {
+        await client.close();
+    }
+}
+
 
 ///UTILITY FUNCTIONS///
 exists = async function(document, collection){
@@ -736,4 +1080,8 @@ exists = async function(document, collection){
         console.error(e);
     }
     return false;
+}
+
+hash = function(str){
+    return createHash('sha256').update(str).digest('hex');
 }
