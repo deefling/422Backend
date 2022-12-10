@@ -9,3 +9,12 @@ class ForeignKeyError extends ErrorLogger{
 }
 
 module.exports.ForeignKeyError = ForeignKeyError;
+                         
+//                                          ,----.
+//                                         / /¯¯\ \
+//    .-----.                            _丄丄__丄丄_
+//  /  ,---.  \  ___________________    |    ___    |
+// |  |     |  ||_________   __   __|   |   (   )   |
+//  \  `---'  /           | |  |_|      |    | |    |
+//   `-------'            '-'           |    |_|    |
+//                                      |___________| 

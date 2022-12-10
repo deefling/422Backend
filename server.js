@@ -62,6 +62,12 @@ function api() {
         mongoDriver.getCars().then( (value) => {res.json(value);},);
     })
 
+    server.get('/getCarsByProperties', (req, res) => { 
+        var doc = req.body;
+        console.log(req.body);
+        mongoDriver.getCarsByProperties(doc).then( (value) => {res.json(value);},);
+    })
+
     server.get('/getBrands', (req, res) => { 
         mongoDriver.getBrands().then( (value) => {res.json(value);},);
     })

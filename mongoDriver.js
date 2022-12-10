@@ -347,6 +347,79 @@ exports.getCars = async function(){
     }
 }
 
+exports.getCarsByProperties = async function(doc){
+    var cars = await this.getCars();
+    var result = cars.cars;
+    console.log(result);
+
+    //check against brands
+    if(doc.brands != null){
+        let newResult = [];
+        result.forEach(car => {
+            doc.brands.forEach(brand =>{
+                if(brand == car.car_name.brand_id){
+                    newResult.push(car)
+                }
+            })
+        })
+        result = newResult
+    }
+
+    //check against models
+    if(doc.models != null){
+        let newResult = [];
+        result.forEach(car => {
+            doc.models.forEach(model =>{
+                if(model == car.car_name.model_id){
+                    newResult.push(car)
+                }
+            })
+        })
+        result = newResult
+    }
+
+    //check against years
+    if(doc.years != null){
+        let newResult = [];
+        result.forEach(car => {
+            doc.years.forEach(year =>{
+                if(year == car.car_name.year){
+                    newResult.push(car)
+                }
+            })
+        })
+        result = newResult
+    }
+
+    //check against categories
+    if(doc.categories != null){
+        let newResult = [];
+        result.forEach(car => {
+            doc.categories.forEach(category =>{
+                if(category == car.category_id){
+                    newResult.push(car)
+                }
+            })
+        })
+        result = newResult
+    }
+
+    //TODO - check against engine types
+    // if(doc.categories != null){
+    //     let newResult = [];
+    //     result.forEach(car => {
+    //         doc.categories.forEach(category =>{
+    //             if(category == car.category_id){
+    //                 newResult.push(car)
+    //             }
+    //         })
+    //     })
+    //     result = newResult
+    // } 
+
+    return {cars: result};
+}
+
 exports.getFeaturedCars = async function(){
     var cars = await this.getCars();
     var featuredCars = {cars: []}

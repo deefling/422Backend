@@ -10,6 +10,12 @@ images available in /images
 //TODO
     'Delete' operations for car
     Add & Delete car on website
+    Maximum 3 featured cars
+
+    Filters:
+        Brands
+        Category
+        engine types
     
     Finish user table
     API operations for user tables
