@@ -724,6 +724,34 @@ exports.logError = async (error) => {
     }
 }
 
+exports.logCommunication = async (req, res) => {
+    try{
+        await client.connect();
+        const db = client.db("communications");
+        const collection = db.collection('communication');
+        var doc = {};
+
+        if(await collection.countDocuments() == 0){
+            doc = {error_id: 0, [error.name]: error.message, timestamp: Date.now()};
+        } else {
+            const query = {};
+            const options = {
+                //sort by user_id -> descending
+                sort: { "error_id": -1 }
+            };
+            latestRecord = await collection.findOne(query, options);
+            id = latestRecord.error_id + 1;
+            doc = {error_id: id, [error.name]: error.message, timestamp:Date.now()};
+        }
+
+        await collection.insertOne(doc);
+    } catch (e) {
+    console.error(e);
+    } finally {
+        await client.close();
+    }
+}
+
 
 ///UTILITY FUNCTIONS///
 exists = async function(document, collection){

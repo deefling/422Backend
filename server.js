@@ -31,6 +31,12 @@ server.use(function apiSecurity(req, res, next){
     }
 });
 
+server.use(function commLogs(req, res, next){
+    console.log(req);
+    // console.log(res.socket.rawHeaders.url);
+    next();
+});
+
 //activation of "main" method
 server.listen(3001, api());
 
