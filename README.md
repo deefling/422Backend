@@ -45,5 +45,3 @@ images available in /images
 
     API Security
         Check req origins
-        Don't expose private data
-        Hash private data like passwords

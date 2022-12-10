@@ -5,6 +5,7 @@ const server = express();
 const cors = require('cors');
 server.use(cors({
     origin: '*'
+    //TODO - change this to vercel at the very end
 }));
 
 //allow API users to access images directory
@@ -65,7 +66,6 @@ function api() {
 
     server.get('/getCarsByProperties', (req, res) => { 
         var doc = req.body;
-        console.log(req.body);
         mongoDriver.getCarsByProperties(doc).then( (value) => {res.json(value);},);
     })
 

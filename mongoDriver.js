@@ -1,6 +1,7 @@
-const { json } = require('express');
 const { MongoClient } = require('mongodb');
 const { ForeignKeyError } = require('./errors/ForeignKeyError.js');
+const { createHash } = require('crypto');
+
 
 //this is the connection info for our specific DB
 //DB name = 422database
@@ -150,7 +151,7 @@ exports.addModelYear = async function(model_id, year, main_image, header_image, 
             doc = {model_year_id: id, model_id, year, main_image, header_image, description, featured, quantity};
         }
         var value = await collection.insertOne(doc); 
-        console.log(value.acknowledged);
+        // console.log(value.acknowledged);
         // TODO - catch any error here?
         return value.acknowledged;
     } catch (e) {
@@ -654,7 +655,7 @@ phone number
         var doc = {};
 
         if(await collection.countDocuments() == 0){
-            doc = {user_id: 0, username: user, password: pw};
+            doc = {user_id: 0, username: user, password: hash(pw)};
         } else {
             const query = {};
             const options = {
@@ -663,7 +664,7 @@ phone number
             };
             latestRecord = await collection.findOne(query, options);
             id = latestRecord.user_id + 1;
-            doc = {user_id: id,  username: user, password: pw};
+            doc = {user_id: id,  username: user, password: hash(pw)};
         }
 
         await collection.insertOne(doc);
@@ -680,7 +681,7 @@ exports.checkUser = async function(user, pw){
         const db = client.db("users");
         const collection = db.collection('user');
 
-        doc = {username: user, password: pw};
+        doc = {username: user, password: hash(pw)};
         const findResult = await collection.find(doc).toArray();
         if(findResult.length == 1){
             return findResult[0];
@@ -735,4 +736,8 @@ exists = async function(document, collection){
         console.error(e);
     }
     return false;
+}
+
+hash = function(str){
+    return createHash('sha256').update(str).digest('hex');
 }
