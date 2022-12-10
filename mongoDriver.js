@@ -816,7 +816,6 @@ exports.logCommunication = async (doc) => {
         } else {
             const query = {};
             const options = {
-                //sort by user_id -> descending
                 sort: { "communication_id": -1 }
             };
             latestRecord = await collection.findOne(query, options);

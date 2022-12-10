@@ -43,5 +43,6 @@ images available in /images
         Custom PK error? - for modelyear
 
     test x-api-key logging
+        get https when it wasnt there
 
     Sweep for TODOs
