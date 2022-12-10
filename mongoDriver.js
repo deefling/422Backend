@@ -20,8 +20,10 @@ exports.resetDatabase = async function(){
         await db.collection("model").deleteMany();
         await db.collection("model_year").deleteMany();
         await db.collection("package").deleteMany();
-        await db.collection("package_detail");
-        await db.collection("part");
+        await db.collection("package_detail").deleteMany();
+        await db.collection("part").deleteMany();
+        await db.collection("part_allowed").deleteMany();
+        await db.collection("part_type").deleteMany();
         db = client.db("users");
         await db.collection("user").deleteMany();
     } catch (e) {
@@ -31,23 +33,6 @@ exports.resetDatabase = async function(){
     }
 }
 
-
-
-///CAR ADD OPERATIONS///
-/* REMAINING
-* part
-    part_id
-    part_type_id (FK)
-    part_name
-    part_price
-* part_allowed
-    part_id (FK)
-    model_year_id (FK)
-* part_type
-    part_type_id
-    part_type_name
-
-*/
 exports.addBrand = async function(name){//good example to copy & paste for simple tables
     try{
         await client.connect();
@@ -221,7 +206,7 @@ exports.addPackageDetail = async function(package_id, part_id){//good example to
     }
 }
 
-exports.addPart = async function(part_type_id, part_name, part_price){//good example to copy & paste for simple tables
+exports.addPart = async function(part_type_id, part_name){//good example to copy & paste for simple tables
     try{
         await client.connect();
         const db = client.db("cars"); //select database
@@ -229,7 +214,7 @@ exports.addPart = async function(part_type_id, part_name, part_price){//good exa
         var doc = {}; //empty document to insert (will be modified)
 
         if(await collection.countDocuments() == 0){ //check if collection empty
-            doc = {part_id: 0, part_type_id, part_name, part_price}; //start at index 0
+            doc = {part_id: 0, part_type_id, part_name}; //start at index 0
         } else { //not empty
             //query DB to find last record & imcrement index from there
             const query = {};
@@ -239,7 +224,7 @@ exports.addPart = async function(part_type_id, part_name, part_price){//good exa
             };
             latestRecord = await collection.findOne(query, options);
             id = latestRecord.part + 1;
-            doc = {part_id : id, part_type_id, part_name, part_price};
+            doc = {part_id : id, part_type_id, part_name};
         }
 
         //insert document
@@ -251,6 +236,51 @@ exports.addPart = async function(part_type_id, part_name, part_price){//good exa
     }
 }
 
+exports.addPartAllowed = async function(part_id, model_year_id){
+    try{
+        await client.connect();
+        const db = client.db("cars"); //select database
+        const collection = db.collection('part_allowed'); //select collection (table)
+        var doc = {part_id, model_year_id};
+
+        //insert document
+        await collection.insertOne(doc);
+    } catch (e) {
+    console.error(e);
+    } finally {
+        await client.close();
+    }
+}
+
+exports.addPartType = async function(part_type_name){
+    try{
+        await client.connect();
+        const db = client.db("cars"); //select database
+        const collection = db.collection('part_type'); //select collection (table)
+        var doc = {}; //empty document to insert (will be modified)
+
+        if(await collection.countDocuments() == 0){ //check if collection empty
+            doc = {part_type_id: 0, part_type_name}; //start at index 0
+        } else { //not empty
+            //query DB to find last record & imcrement index from there
+            const query = {};
+            const options = {
+                //sort by part_type_id -> descending
+                sort: { "part_type_id": -1 }
+            };
+            latestRecord = await collection.findOne(query, options);
+            id = latestRecord.part + 1;
+            doc = {part_type_id: id, part_type_name};
+        }
+
+        //insert document
+        await collection.insertOne(doc);
+    } catch (e) {
+    console.error(e);
+    } finally {
+        await client.close();
+    }
+}
 
 
 //CAR READ OPERATIONS
