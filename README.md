@@ -8,10 +8,13 @@ npm run reset -> fresh database
 images available in /images 
 
 //TODO
-    Add & Delete car on website - request to frontend
-
-    Finish user table
-    API operations for user tables
+    Info for Frontend:
+        - API Key
+        - (optional) teach them about .env
+        - Request help for Add & Delete car on website
+        - Differentiate between admin & user (auth)
+        - Input validations
+            - NoSQL sanitization
 
     SLDC Doc (both groups)
         Decision making
@@ -20,19 +23,17 @@ images available in /images
         Hardest parts
 
     API Documentation
-        Google Doc?
-
-    Data Validation
-        Done on frontend?
-        need to sanitize against nosql attacks
 
     Error 
         Stress test API calls
-        standardize outputs
-        Error checking - return new errors instead of throwing
+        Standardize outputs
+        Error checking - return new errors instead of throwing?
         Custom PK error? - for modelyear
+
+    fix getCarsByProperties w/ enginetypes
 
     test x-api-key logging
         get https when it wasnt there
+        look up better way to check api key
 
     Sweep for TODOs

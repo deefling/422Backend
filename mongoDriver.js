@@ -1,5 +1,6 @@
 const { MongoClient } = require('mongodb');
 const { ForeignKeyError } = require('./errors/ForeignKeyError.js');
+const { GenericError } = require('./errors/GenericError.js');
 const { createHash } = require('crypto');
 require('dotenv/config');
 
@@ -287,7 +288,8 @@ exports.addPartType = async function(part_type_name){
 
 //CAR READ OPERATIONS
 exports.getCar = async function(id){
-    await client.connect();
+    try{
+        await client.connect();
         const db = client.db("cars");
         const model_year_collection = db.collection('model_year');
         const model_collection = db.collection('model');
@@ -296,15 +298,19 @@ exports.getCar = async function(id){
 
         var query = {model_year_id: parseInt(id)}
         var model_year_data = await model_year_collection.findOne(query);
+        if(model_year_data == null){return {error: "Car ID not found"}}
 
         query = {model_id : model_year_data.model_id};
         var model_data = await model_collection.findOne(query);
+        if(model_data == null){throw new ForeignKeyError("Model FK not found")}
 
         query = {brand_id : model_data.brand_id};
         var brand_data = await brand_collection.findOne(query);
+        if(brand_data == null){throw new ForeignKeyError("Brand FK not found")}
 
         query = {car_type_id : model_data.car_type_id};
         var car_type_data = await car_type_collection.findOne(query);
+        if(car_type_data == null){throw new ForeignKeyError("Car Type FK not found")}
 
         var tempCar = {
             car_id: model_year_data.model_year_id,
@@ -325,6 +331,12 @@ exports.getCar = async function(id){
         };
 
         return tempCar;
+    } catch (e){
+        new GenericError(e.message);
+        return {error: e.message}
+    } finally {
+        await client.close();
+    }
 }
 
 exports.getCars = async function(){
@@ -373,7 +385,7 @@ exports.getCars = async function(){
 
         return findResult;
     } catch (e) {
-        console.error(e);
+        throw new GenericError(e.message);
     } finally {
         await client.close();
     }
@@ -382,6 +394,7 @@ exports.getCars = async function(){
 exports.getCarsByProperties = async function(doc){
     var cars = await this.getCars();
     var result = cars.cars;
+    console.log(result);
 
     //check against brands
     if(doc.brands != null){
@@ -436,10 +449,11 @@ exports.getCarsByProperties = async function(doc){
     }
 
     //TODO - check against engine types
-    // if(doc.categories != null){
+    // if(doc.enginetypes != null){
     //     let newResult = [];
     //     result.forEach(car => {
-    //         doc.categories.forEach(category =>{
+            
+    //         doc.enginetypes.forEach(type =>{
     //             if(category == car.category_id){
     //                 newResult.push(car)
     //             }
@@ -452,6 +466,7 @@ exports.getCarsByProperties = async function(doc){
 }
 
 exports.getFeaturedCars = async function(){
+    try{
     var cars = await this.getCars();
     var featuredCars = {cars: []}
 
@@ -465,6 +480,14 @@ exports.getFeaturedCars = async function(){
     }
 
     return featuredCars;
+    } 
+    catch (e) {
+        new GenericError(e.message);
+        return {error: e.message}
+    }
+    finally {
+        await client.close()
+    }
 }
 
 exports.getBrand = async function(id){
