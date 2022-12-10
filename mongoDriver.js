@@ -7,8 +7,8 @@ require('dotenv/config');
 //DB name = 422database
 //user = root
 //pw = TargaryensFTW
-const uri = "mongodb+srv://root:TargaryensFTW@422databse.axyczfl.mongodb.net/?retryWrites=true&w=majority";
-// const uri = process.env.MONGOCONNECTIONSTRING;
+// const uri = "mongodb+srv://root:TargaryensFTW@422databse.axyczfl.mongodb.net/?retryWrites=true&w=majority";
+const uri = process.env.MONGOCONNECTIONSTRING;
 const client = new MongoClient(uri);
 
 //clears the database for the purpose of a fresh batch of data
