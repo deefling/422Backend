@@ -175,6 +175,9 @@ async function run() {
     await mongoDriver.addPackageDetail(11, 1);
     await mongoDriver.addPackageDetail(11, 3);
     await mongoDriver.addPackageDetail(11, 7);
+    await mongoDriver.addPackageDetail(11, 9);
+    await mongoDriver.addPackageDetail(11, 10);
+    await mongoDriver.addPackageDetail(11, 11);
     await mongoDriver.addPackageDetail(12, 0);
     await mongoDriver.addPackageDetail(12, 2);
     await mongoDriver.addPackageDetail(12, 6);
@@ -205,6 +208,7 @@ async function run() {
     await mongoDriver.addPackageDetail(21, 1);
     await mongoDriver.addPackageDetail(21, 3);
     await mongoDriver.addPackageDetail(21, 7);
+    await mongoDriver.addPackageDetail(21, 9);
     await mongoDriver.addPackageDetail(22, 0);
     await mongoDriver.addPackageDetail(22, 2);
     await mongoDriver.addPackageDetail(22, 6);
@@ -235,18 +239,27 @@ async function run() {
     await mongoDriver.addPackageDetail(31, 1);
     await mongoDriver.addPackageDetail(31, 3);
     await mongoDriver.addPackageDetail(31, 7);
+    await mongoDriver.addPackageDetail(31, 9);
+    await mongoDriver.addPackageDetail(31, 10);
+    await mongoDriver.addPackageDetail(31, 11);
     await mongoDriver.addPackageDetail(32, 0);
     await mongoDriver.addPackageDetail(32, 2);
     await mongoDriver.addPackageDetail(32, 6);
     await mongoDriver.addPackageDetail(33, 1);
     await mongoDriver.addPackageDetail(33, 3);
     await mongoDriver.addPackageDetail(33, 7);
+    await mongoDriver.addPackageDetail(33, 9);
+    await mongoDriver.addPackageDetail(33, 10);
+    await mongoDriver.addPackageDetail(33, 11);
     await mongoDriver.addPackageDetail(34, 0);
     await mongoDriver.addPackageDetail(34, 2);
     await mongoDriver.addPackageDetail(34, 6);
     await mongoDriver.addPackageDetail(35, 1);
     await mongoDriver.addPackageDetail(35, 3);
     await mongoDriver.addPackageDetail(35, 7);
+    await mongoDriver.addPackageDetail(35, 9);
+    await mongoDriver.addPackageDetail(35, 10);
+    await mongoDriver.addPackageDetail(35, 11);
     await mongoDriver.addPackageDetail(36, 0);
     await mongoDriver.addPackageDetail(36, 2);
     await mongoDriver.addPackageDetail(36, 6);
@@ -277,12 +290,18 @@ async function run() {
     await mongoDriver.addPackageDetail(45, 1);
     await mongoDriver.addPackageDetail(45, 3);
     await mongoDriver.addPackageDetail(45, 7);
+    await mongoDriver.addPackageDetail(45, 9);
+    await mongoDriver.addPackageDetail(45, 10);
+    await mongoDriver.addPackageDetail(45, 11);
     await mongoDriver.addPackageDetail(46, 0);
     await mongoDriver.addPackageDetail(46, 2);
     await mongoDriver.addPackageDetail(46, 6);
     await mongoDriver.addPackageDetail(47, 1);
     await mongoDriver.addPackageDetail(47, 3);
     await mongoDriver.addPackageDetail(47, 7);
+    await mongoDriver.addPackageDetail(47, 9);
+    await mongoDriver.addPackageDetail(47, 10);
+    await mongoDriver.addPackageDetail(47, 11);
     await mongoDriver.addPackageDetail(48, 0);
     await mongoDriver.addPackageDetail(48, 2);
     await mongoDriver.addPackageDetail(48, 6);
@@ -295,6 +314,8 @@ async function run() {
     await mongoDriver.addPackageDetail(51, 1);
     await mongoDriver.addPackageDetail(51, 3);
     await mongoDriver.addPackageDetail(51, 7);
+    await mongoDriver.addPackageDetail(51, 10);
+    
     
 
 
@@ -310,11 +331,17 @@ async function run() {
     await mongoDriver.addPart(2, "Halogen headlights");
     await mongoDriver.addPart(2, "LED headlights");
     await mongoDriver.addPart(2, "HID headlights");
+    await mongoDriver.addPart(3, "Front spoiler");
+    await mongoDriver.addPart(3, "Rear spoiler");
+    await mongoDriver.addPart(4, "Sport seat");
 
     //fill part_type with sample data
     await mongoDriver.addPartType("Engine");
     await mongoDriver.addPartType("Wheels");
     await mongoDriver.addPartType("Headlights");
+    await mongoDriver.addPartType("Spoiler");
+    await mongoDriver.addPartType("Seat");
+
 
 
     //adding users
