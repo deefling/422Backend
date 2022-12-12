@@ -4,12 +4,6 @@ const { GenericError } = require('./errors/GenericError.js');
 const { createHash } = require('crypto');
 require('dotenv/config');
 
-
-//this is the connection info for our specific DB
-//DB name = 422database
-//user = root
-//pw = TargaryensFTW
-// const uri = "mongodb+srv://root:TargaryensFTW@422databse.axyczfl.mongodb.net/?retryWrites=true&w=majority";
 const uri = process.env.MONGOCONNECTIONSTRING;
 const client = new MongoClient(uri);
 
@@ -1021,7 +1015,6 @@ exports.logCommunication = async (doc) => {
         } else {
             const query = {};
             const options = {
-                //sort by user_id -> descending
                 sort: { "communication_id": -1 }
             };
             latestRecord = await collection.findOne(query, options);

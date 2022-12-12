@@ -8,20 +8,6 @@ npm run reset -> fresh database
 images available in /images 
 
 //TODO
-    Info for Frontend:
-        - API Key
-        - (optional) teach them about .env
-        - Request help for Add & Delete car on website
-        - Differentiate between admin & user (auth)
-        - Input validations
-            - NoSQL sanitization (semi-optional)
-        - explain about proj expectations
-
-    SLDC Doc (both groups)
-        Decision making
-        Development process
-        Easiest parts
-        Hardest parts
 
     API Documentation
 
@@ -30,15 +16,10 @@ images available in /images
         Standardize outputs
         Error checking - return new errors instead of throwing?
         Custom PK error? - for modelyear
+        Should we do coalescing deletes or throw errors on select queries
 
     fix getCarsByProperties w/ enginetypes
 
     fix commLogs for images
-
-    add package details in fillTables
-
-    test x-api-key logging
-        get https when it wasnt there
-        look up better way to check api key
 
     Sweep for TODOs

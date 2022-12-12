@@ -150,7 +150,6 @@ async function run() {
     await mongoDriver.addPackageDetail(3, 1);
     await mongoDriver.addPackageDetail(3, 3);
     await mongoDriver.addPackageDetail(3, 7);
-
     await mongoDriver.addPackageDetail(4, 0);
     await mongoDriver.addPackageDetail(4, 2);
     await mongoDriver.addPackageDetail(4, 6);

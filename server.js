@@ -23,7 +23,10 @@ server.use(limiter)
 
 
 function commLogs(req, res, next) {
-  var oldWrite = res.write,
+    var resourceIsImg = req.url.split('/')[1] === "images";
+    var _url = req.url;
+  
+    var oldWrite = res.write,
       oldEnd = res.end;
   var chunks = [];
 
@@ -37,13 +40,19 @@ function commLogs(req, res, next) {
       chunks.push(chunk);
     var body = Buffer.concat(chunks).toString('utf8');
     doc = {
-        url: req.url,
+        url: _url,
         method: req.method,
         host: req.hostname,
-        x_api_key: req.rawHeaders[1],
-        payout: JSON.parse(body)
+        x_api_key: req.header("x-api-key"),
+        payout: ""
     };
-    // console.log(doc);
+
+    if(resourceIsImg){
+        doc.payout = "Contents of images at " + _url;
+    } else {
+        doc.payout = JSON.parse(body);
+    }
+
     await mongoDriver.logCommunication(doc);
 
     oldEnd.apply(res, arguments);
