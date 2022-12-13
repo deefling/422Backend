@@ -7,20 +7,22 @@ const rateLimit = require('express-rate-limit')
 
 
 //allow cross-origin requests
-// const cors = require('cors');
-// server.use(cors({
-//     origin: '*'
-//     //TODO - change this to vercel at the very end
-// }));
+const cors = require('cors');
+server.use(cors({
+    origin: '*', 
+    allowedHeaders: ['Content-Type', 'x-api-key']
+    //TODO - change this to vercel at the very end
+}));
 
-server.use(function(req, res, next) {
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-    res.setHeader('Access-Control-Allow-Credentials', true);
-    res.setHeader('Access-Control-Allow-Credentials', true);
-    next();
-});
+// server.use(function(req, res, next) {
+//     res.setHeader('Access-Control-Allow-Origin', '*');
+//     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+//     res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+//     res.setHeader('Access-Control-Allow-Credentials', true);
+//     res.setHeader('Access-Control-Allow-Credentials', true);
+//     next();
+// });
+
 
 
 const limiter = rateLimit({
@@ -32,10 +34,6 @@ const limiter = rateLimit({
 
 // Apply the rate limiting middleware to all requests
 server.use(limiter)
-
-
-
-
 
 
 
@@ -82,11 +80,6 @@ server.use(commLogs);
 
 
 
-
-
-
-
-
 //allow API users to access images directory
 server.use('/images', express.static('images'));
 server.use(express.json());
@@ -95,7 +88,7 @@ server.use(express.urlencoded({ extended: true }));
 //Custom driver for our DB
 const mongoDriver = require('./mongoDriver');
 
-//TODO catch custom errors
+
 
 //TODO api security - don't think this actually blocks anything
 //need to modify it to only allow requests from certain IPs and from vercel app
@@ -108,6 +101,8 @@ const mongoDriver = require('./mongoDriver');
 //         res.json(doc);
 //     }
 // });
+
+
 
 //activation of "main" method
 server.listen(3001, api());

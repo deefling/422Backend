@@ -73,7 +73,7 @@ async function run() {
     await mongoDriver.addModelYear(9, "2022", "/images/ecosportMain.jpg", "/images/ecosportHead.jpg", "Great for long trips", false, 2);
     await mongoDriver.addModelYear(10, "2019", "/images/mustangMain.jpg", "/images/mustangHead.jpg", "Best muscle car of all times", false, 34);
     await mongoDriver.addModelYear(11, "2022", "/images/fiestaMain.jpg", "/images/fiestaHead.jpg", "You passed your driving test in this?", false, 42);
-    await mongoDriver.addModelYear(12, "2022", "/images/corolaMain.jpg", "/images/corolaHead.jpg", "Everybodies first car", false, 31);
+    await mongoDriver.addModelYear(12, "2022", "/images/corolaMain.jpg", "/images/corolaHead.jpg", "Everybodies first car", true, 31);
     await mongoDriver.addModelYear(13, "2022", "/images/camryMain.jpg", "/images/camryHead.jpg", "Modern and eco-friendly", false, 29);
     await mongoDriver.addModelYear(14, "2022", "/images/aurisMain.jpg", "/images/aurisHead.jpg", "Great for modifying", false, 20);
     await mongoDriver.addModelYear(15, "2022", "/images/romaMain.jpg", "/images/romaHead.jpg", "The best car that you have never heard of", false, 3);
@@ -90,32 +90,32 @@ async function run() {
     // console.log(await mongoDriver.getModelYears());
 
     //fill package with sample data
-    await mongoDriver.addPackage(0, "Standard Civic Package", 15000); g/d
-    await mongoDriver.addPackage(0, "Premium Civic Package", 25000); g
-    await mongoDriver.addPackage(2, "Standard P1 Package", 22000); h
-    await mongoDriver.addPackage(2, "Premium P1 Package", 30000); h
-    await mongoDriver.addPackage(5, "Standard AMG GT Package", 92500); G 
-    await mongoDriver.addPackage(5, "Premium AMG GT Package", 110000); g
-    await mongoDriver.addPackage(6, "Standard X7 Package", 77850); g/d
-    await mongoDriver.addPackage(7, "Premium X7 Package", 90000); g/d
-    await mongoDriver.addPackage(7, "Standard Pilot Package", 37580); g
-    await mongoDriver.addPackage(7, "Premium Pilot Package", 45500); g
-    await mongoDriver.addPackage(8, "Standard Passport Package", 41100); g
-    await mongoDriver.addPackage(8, "Premium Passport Package", 49900); g
-    await mongoDriver.addPackage(9, "Standard Ecosport Package", 28990); g/h
-    await mongoDriver.addPackage(9, "Premium Ecosport Package", 34400); g/h
-    await mongoDriver.addPackage(10, "Standard Mustang Package", 27500); g
+    await mongoDriver.addPackage(0, "Standard Civic Package", 15000); //g/d
+    await mongoDriver.addPackage(0, "Premium Civic Package", 25000); //g
+    await mongoDriver.addPackage(2, "Standard P1 Package", 22000); //h
+    await mongoDriver.addPackage(2, "Premium P1 Package", 30000); //h
+    await mongoDriver.addPackage(5, "Standard AMG GT Package", 92500); //G 
+    await mongoDriver.addPackage(5, "Premium AMG GT Package", 110000); //g
+    await mongoDriver.addPackage(6, "Standard X7 Package", 77850); //g/d
+    await mongoDriver.addPackage(7, "Premium X7 Package", 90000); //g/d
+    await mongoDriver.addPackage(7, "Standard Pilot Package", 37580); //g
+    await mongoDriver.addPackage(7, "Premium Pilot Package", 45500); //g
+    await mongoDriver.addPackage(8, "Standard Passport Package", 41100); //g
+    await mongoDriver.addPackage(8, "Premium Passport Package", 49900); //g
+    await mongoDriver.addPackage(9, "Standard Ecosport Package", 28990); //g/h
+    await mongoDriver.addPackage(9, "Premium Ecosport Package", 34400); //g/h
+    await mongoDriver.addPackage(10, "Standard Mustang Package", 27500); //g
     await mongoDriver.addPackage(10, "Premium Mustang Package", 42300); 
-    await mongoDriver.addPackage(11, "Standard Fiesta Package", 32290); h
-    await mongoDriver.addPackage(11, "Premium Fiesta Package", 38250); h
+    await mongoDriver.addPackage(11, "Standard Fiesta Package", 32290); //h
+    await mongoDriver.addPackage(11, "Premium Fiesta Package", 38250); //h
     await mongoDriver.addPackage(12, "Standard Corola Package", 20400);
-    await mongoDriver.addPackage(12, "Premium Corola Package", 31100); h
+    await mongoDriver.addPackage(12, "Premium Corola Package", 31100); //h
     await mongoDriver.addPackage(13, "Standard Camry Package", 25800);
-    await mongoDriver.addPackage(13, "Premium Camry Package", 35100); h
-    await mongoDriver.addPackage(14, "Standard Auris Package", 10000); h
-    await mongoDriver.addPackage(14, "Premium Auris Package", 16300); h/e
-    await mongoDriver.addPackage(15, "Standard Roma Package", 222630); h/g
-    await mongoDriver.addPackage(15, "Premium Roma Package", 283000); g/h
+    await mongoDriver.addPackage(13, "Premium Camry Package", 35100); //h
+    await mongoDriver.addPackage(14, "Standard Auris Package", 10000); //h
+    await mongoDriver.addPackage(14, "Premium Auris Package", 16300); //h/e
+    await mongoDriver.addPackage(15, "Standard Roma Package", 222630); //h/g
+    await mongoDriver.addPackage(15, "Premium Roma Package", 283000); //g/h
     await mongoDriver.addPackage(16, "Standard F8 Tributo Package", 276000); 
     await mongoDriver.addPackage(16, "Premium F8 Tributo Package", 312400);
     await mongoDriver.addPackage(17, "Standard F8 Tributo Package", 274000);
@@ -126,8 +126,8 @@ async function run() {
     await mongoDriver.addPackage(19, "Premium M4 Package", 60000);
     await mongoDriver.addPackage(20, "Standard Phantom Package", 420000);
     await mongoDriver.addPackage(20, "Premium Phantom Package", 450000);
-    await mongoDriver.addPackage(21, "Standard ModelS Package", 140000); E
-    await mongoDriver.addPackage(21, "Premium ModelS Package", 160000); E
+    await mongoDriver.addPackage(21, "Standard ModelS Package", 140000); //E
+    await mongoDriver.addPackage(21, "Premium ModelS Package", 160000); //E
     await mongoDriver.addPackage(22, "Standard 720s Spider Package", 330000);
     await mongoDriver.addPackage(22, "Premium 720s Spider Package", 300000);
     await mongoDriver.addPackage(23, "Standard F40 Package", 400000);
