@@ -7,12 +7,12 @@ const rateLimit = require('express-rate-limit')
 
 
 //allow cross-origin requests
-const cors = require('cors');
-server.use(cors({
-    origin: '*', 
-    allowedHeaders: ['Content-Type', 'x-api-key']
-    //TODO - change this to vercel at the very end
-}));
+// const cors = require('cors');
+// server.use(cors({
+//     origin: '*', 
+//     allowedHeaders: ['Content-Type', 'x-api-key']
+//     //TODO - change this to vercel at the very end
+// }));
 
 // server.use(function(req, res, next) {
 //     res.setHeader('Access-Control-Allow-Origin', '*');
