@@ -91,11 +91,11 @@ async function run() {
 
     //fill package with sample data
     await mongoDriver.addPackage(0, "Standard Civic Package", 15000); //g/d
-    await mongoDriver.addPackage(0, "Premium Civic Package", 25000); //g
+    await mongoDriver.addPackage(0, "Premium Civic Package", 25000); 
     await mongoDriver.addPackage(2, "Standard P1 Package", 22000); //h
     await mongoDriver.addPackage(2, "Premium P1 Package", 30000); //h
-    await mongoDriver.addPackage(5, "Standard AMG GT Package", 92500); //G 
-    await mongoDriver.addPackage(5, "Premium AMG GT Package", 110000); //g
+    await mongoDriver.addPackage(5, "Standard AMG GT Package", 92500); 
+    await mongoDriver.addPackage(5, "Premium AMG GT Package", 110000);
     await mongoDriver.addPackage(6, "Standard X7 Package", 77850); //g/d
     await mongoDriver.addPackage(7, "Premium X7 Package", 90000); //g/d
     await mongoDriver.addPackage(7, "Standard Pilot Package", 37580); //g
@@ -280,7 +280,7 @@ async function run() {
     await mongoDriver.addPackageDetail(42, 0);
     await mongoDriver.addPackageDetail(42, 2);
     await mongoDriver.addPackageDetail(42, 6);
-    await mongoDriver.addPackageDetail(43, 1);
+    await mongoDriver.addPackageDetail(43, 14);
     await mongoDriver.addPackageDetail(43, 3);
     await mongoDriver.addPackageDetail(43, 7);
     await mongoDriver.addPackageDetail(44, 0);

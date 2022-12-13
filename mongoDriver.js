@@ -477,18 +477,28 @@ exports.getCarsByProperties = async function(doc){
     }
 
     //TODO - check against engine types
-    // if(doc.enginetypes != null){
-    //     let newResult = [];
-    //     result.forEach(car => {
+    try{
+    if(doc.enginetypes != null){
+        let newResult = [];
+        const package = db.collection('package');
+        const package_detail = db.collection('package_detail');
+        const part = db.collection('part');
+
+        result.forEach(car => {
             
     //         doc.enginetypes.forEach(type =>{
     //             if(category == car.category_id){
     //                 newResult.push(car)
     //             }
     //         })
-    //     })
-    //     result = newResult
-    // } 
+        })
+        result = newResult
+    } 
+    } catch (e){
+        console.log(e);
+    } finally {
+        await client.close();
+    }
 
     return {cars: result};
 }
