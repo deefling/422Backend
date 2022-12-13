@@ -334,7 +334,6 @@ async function run() {
     await mongoDriver.addPart(3, "Rear spoiler");
     await mongoDriver.addPart(4, "Sport seat");
     await mongoDriver.addPart(0, "Diesel");
-    await mongoDriver.addPart(0, "Gasoline");
     await mongoDriver.addPart(0, "Hybrid");
     await mongoDriver.addPart(0, "Electric");
 

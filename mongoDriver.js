@@ -365,6 +365,21 @@ exports.getCar = async function(id){
     }
 }
 
+exports.getCarInfo = async function(id){
+    try{
+        await client.connect();
+        const db = client.db("cars");
+        const package = db.collection('package');
+        const package_detail = db.collection('package_detail');
+        const brand_collection = db.collection('brand');
+    } catch (e){
+        new GenericError(e.message);
+        return {error: e.message}
+    } finally {
+        await client.close();
+    }
+}
+
 exports.getCars = async function(){
     try{
         await client.connect();

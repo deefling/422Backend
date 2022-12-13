@@ -158,8 +158,9 @@ function api() {
         mongoDriver.getFeaturedCars().then( (value) => {res.json(value);},);
     })
 
-    server.get('/getPackages', (req, res) => {
-        mongoDriver.getPackages(req.body.year_id).then ( (value) => {res.json(value);},);
+    server.get('/getPackages/:id', (req, res) => {
+        id = req.params.id
+        mongoDriver.getPackages(is).then ( (value) => {res.json(value);},);
     })
 
     server.get('/getFilters', (req, res) => {
