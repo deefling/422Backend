@@ -20,6 +20,4 @@ images available in /images
 
     fix getCarsByProperties w/ enginetypes
 
-    fix commLogs for images
-
     Sweep for TODOs
