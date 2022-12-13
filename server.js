@@ -6,6 +6,22 @@ require('dotenv/config');
 const rateLimit = require('express-rate-limit')
 
 
+//allow cross-origin requests
+// const cors = require('cors');
+// server.use(cors({
+//     origin: '*'
+//     //TODO - change this to vercel at the very end
+// }));
+
+server.use(function(req, res, next) {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+    res.setHeader('Access-Control-Allow-Credentials', true);
+    next();
+});
+
+
 const limiter = rateLimit({
 	windowMs: 1 * 60 * 1000, // 1 minute
 	max: 100, // Limit each IP to 100 requests per `window` (here, per minute)
@@ -68,20 +84,7 @@ server.use(commLogs);
 
 
 
-//allow cross-origin requests
-// const cors = require('cors');
-// server.use(cors({
-//     origin: '*'
-//     //TODO - change this to vercel at the very end
-// }));
 
-server.use(function(req, res, next) {
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-    res.setHeader('Access-Control-Allow-Credentials', true);
-    next();
-});
 
 //allow API users to access images directory
 server.use('/images', express.static('images'));
