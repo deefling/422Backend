@@ -18,6 +18,7 @@ server.use(function(req, res, next) {
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
     res.setHeader('Access-Control-Allow-Credentials', true);
+    res.setHeader('Access-Control-Allow-Credentials', true);
     next();
 });
 
@@ -98,15 +99,15 @@ const mongoDriver = require('./mongoDriver');
 
 //TODO api security - don't think this actually blocks anything
 //need to modify it to only allow requests from certain IPs and from vercel app
-server.use(function apiSecurity(req, res, next){
-    let host = req.header("x-api-key");
-    if(host == process.env.APIKEY){
-        next();
-    } else {
-        var doc = {error:"unauthorized host detected"};
-        res.json(doc);
-    }
-});
+// server.use(function apiSecurity(req, res, next){
+//     let host = req.header("x-api-key");
+//     if(host == process.env.APIKEY){
+//         next();
+//     } else {
+//         var doc = {error:"unauthorized host detected"};
+//         res.json(doc);
+//     }
+// });
 
 //activation of "main" method
 server.listen(3001, api());
