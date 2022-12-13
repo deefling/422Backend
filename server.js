@@ -160,7 +160,7 @@ function api() {
 
     server.get('/getPackages/:id', (req, res) => {
         id = req.params.id
-        mongoDriver.getPackages(id).then ( (value) => {res.json(value);},);
+        mongoDriver.getPackages(id).then( (value) => {res.json(value);},);
     })
 
     server.get('/getFilters', (req, res) => {

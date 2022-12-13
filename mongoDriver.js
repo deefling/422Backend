@@ -664,20 +664,23 @@ exports.getModelYears = async function(){
     }
 }
 
-exports.getPackages = async function(year_id){
+exports.getPackages = async function(car_id){
     try{
         await client.connect();
         const db = client.db("cars");
         const result = [];
 
+        var doc = {model_year_id: parseInt(car_id)};
         const package = db.collection('package');
-        const findPackage = await package.find({model_year_id:year_id}).toArray();
+        const findPackage = await package.find(doc).toArray();
+        console.log(findPackage);
         for (var i = 0;i<findPackage.length;i++){
             var tempData = {
                 name: findPackage[i]['package_name'],
                 price: findPackage[i]['base_price'],
                 parts:[]
             }
+            
 
             const details = db.collection('package_detail');
             const findDetails = await details.find({package_id:findPackage[i]['package_id']}).toArray();
