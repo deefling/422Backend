@@ -359,8 +359,7 @@ exports.getCar = async function(id){
 
         return tempCar;
     } catch (e){
-        new GenericError(e.message);
-        return {error: e.message}
+        throw new GenericError(e.message);
     } finally {
         await client.close();
     }
@@ -414,7 +413,7 @@ exports.getCars = async function(){
 
         return findResult;
     } catch (e) {
-        new GenericError(e.message);
+        throw new GenericError(e.message);
         console.log(e.message);
         return {error: e.message}
     } finally {
@@ -527,7 +526,7 @@ exports.getFeaturedCars = async function(){
     return featuredCars;
     } 
     catch (e) {
-        new GenericError(e.message);
+        throw new GenericError(e.message);
         return {error: e.message}
     }
     finally {

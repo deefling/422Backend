@@ -68,7 +68,7 @@ function commLogs(req, res, next) {
         doc.payout = body;
     }
 
-    mongoDriver.logCommunication(doc);
+    await mongoDriver.logCommunication(doc);
 
     oldEnd.apply(res, arguments);
   };
