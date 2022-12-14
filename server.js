@@ -65,7 +65,7 @@ function commLogs(req, res, next) {
     if(resourceIsImg){
         doc.payout = "Contents of images at " + _url;
     } else {
-        doc.payout = JSON.parse(body);
+        doc.payout = body;
     }
 
     await mongoDriver.logCommunication(doc);
