@@ -527,7 +527,6 @@ exports.getFeaturedCars = async function(){
     } 
     catch (e) {
         throw new GenericError(e.message);
-        return {error: e.message}
     }
     finally {
         await client.close()

@@ -3,7 +3,8 @@ const server = express();
 
 require('dotenv/config');
 
-const rateLimit = require('express-rate-limit')
+const rateLimit = require('express-rate-limit');
+const { CommLogger } = require('./errors/CommLogger');
 
 
 //allow cross-origin requests
@@ -68,7 +69,8 @@ function commLogs(req, res, next) {
         doc.payout = body;
     }
 
-    await mongoDriver.logCommunication(doc);
+    // await mongoDriver.logCommunication(doc);
+    new CommLogger(doc);
 
     oldEnd.apply(res, arguments);
   };
