@@ -7,21 +7,21 @@ const rateLimit = require('express-rate-limit')
 
 
 //allow cross-origin requests
-const cors = require('cors');
-server.use(cors({
-    origin: '*', 
-    // allowedHeaders: ['Content-Type', 'x-api-key']
-    //TODO - change this to vercel at the very end
-}));
+// const cors = require('cors');
+// server.use(cors({
+//     origin: '*', 
+//     // allowedHeaders: ['Content-Type', 'x-api-key']
+//     //TODO - change this to vercel at the very end
+// }));
 
-// server.use(function(req, res, next) {
-//     res.setHeader('Access-Control-Allow-Origin', '*');
-//     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
-//     res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-//     res.setHeader('Access-Control-Allow-Credentials', true);
-//     res.setHeader('Access-Control-Allow-Credentials', true);
-//     next();
-// });
+server.use(function(req, res, next) {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+    res.setHeader('Access-Control-Allow-Headers', ['origin', 'Content-Type', 'x-api-key']);
+    res.setHeader('Access-Control-Allow-Credentials', true);
+    res.setHeader('Access-Control-Allow-Credentials', true);
+    next();
+});
 
 
 
