@@ -475,8 +475,6 @@ exports.getCarsByProperties = async function(doc){
         })
         result = newResult
     }
-
-    //TODO - check against engine types
     
     if(doc.enginetypes != null){
         let newResult = [];
@@ -898,7 +896,7 @@ exports.addUser = async function(username, admin, firstname, lastname, pw, phone
         }
 
         await collection.insertOne(doc);
-        return true;
+        return {inserted: true};
     } catch (e) {
     console.error(e);
     return false;
@@ -957,10 +955,10 @@ exports.updateUser = async function(json){
         // console.log(hash(json.password));
 
         await collection.updateOne(myquery, newvalues);
-        return true;
+        return {updated: true};
     } catch (e) {
         console.error(e);
-        return false;
+        return {error: e};
     } finally {
         await client.close();
     }
@@ -975,10 +973,10 @@ exports.deleteUser = async function(id){
 
         await collection.deleteOne(query);
         
-        return true;
+        return {deleted: true};
     } catch (e) {
         console.error(e);
-        return false;
+        return {"error": e};
     } finally {
         await client.close();
     }
@@ -995,8 +993,11 @@ exports.checkUser = async function(user, pw){
         if(findResult.length == 1){
             return findResult[0];
         }
+
+        return {'error': "user not found"};
     } catch (e) {
         console.error(e);
+        return {error: e}
     } finally {
         await client.close();
     }

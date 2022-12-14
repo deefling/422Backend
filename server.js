@@ -4,7 +4,6 @@ const server = express();
 require('dotenv/config');
 
 const rateLimit = require('express-rate-limit');
-const { CommLogger } = require('./errors/CommLogger');
 
 
 //allow cross-origin requests
@@ -12,7 +11,6 @@ const { CommLogger } = require('./errors/CommLogger');
 // server.use(cors({
 //     origin: '*', 
 //     // allowedHeaders: ['Content-Type', 'x-api-key']
-//     //TODO - change this to vercel at the very end
 // }));
 
 server.use(function(req, res, next) {
@@ -70,7 +68,6 @@ function commLogs(req, res, next) {
     }
 
     // await mongoDriver.logCommunication(doc);
-    // new CommLogger(doc);
 
     oldEnd.apply(res, arguments);
   };
