@@ -68,7 +68,7 @@ function commLogs(req, res, next) {
         doc.payout = body;
     }
 
-    await mongoDriver.logCommunication(doc);
+    mongoDriver.logCommunication(doc);
 
     oldEnd.apply(res, arguments);
   };
@@ -90,8 +90,6 @@ const mongoDriver = require('./mongoDriver');
 
 
 
-//TODO api security - don't think this actually blocks anything
-//need to modify it to only allow requests from certain IPs and from vercel app
 // server.use(function apiSecurity(req, res, next){
 //     let host = req.header("x-api-key");
 //     if(host == process.env.APIKEY){

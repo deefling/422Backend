@@ -422,7 +422,7 @@ exports.getCars = async function(){
 exports.getCarsByProperties = async function(doc){
     var cars = await this.getCars();
     var result = cars.cars;
-    console.log(result);
+    // console.log(result);
 
     //check against brands
     if(doc.brands != null){
@@ -477,28 +477,35 @@ exports.getCarsByProperties = async function(doc){
     }
 
     //TODO - check against engine types
-    try{
+    
     if(doc.enginetypes != null){
         let newResult = [];
-        const package = db.collection('package');
-        const package_detail = db.collection('package_detail');
-        const part = db.collection('part');
 
-        result.forEach(car => {
-            
-    //         doc.enginetypes.forEach(type =>{
-    //             if(category == car.category_id){
-    //                 newResult.push(car)
-    //             }
-    //         })
-        })
+        for(let i = 0; i < result.length; i++){
+            var engines = []
+            const packages = await this.getPackages(result[i].car_id);
+            // console.log(packages);
+            packages.forEach((p) => {
+                // console.log(p.parts)
+                p.parts.forEach((part) => {
+                    if(part.part_type_id == 0){
+                        engines.push(part);
+                    }
+                })
+            })
+
+            doc.enginetypes.forEach(type =>{
+                engines.forEach((engine) => {
+                    if(type == engine.part_id){
+                        newResult.push(result[i])
+                    }
+                })
+                
+            })
+        }
         result = newResult
     } 
-    } catch (e){
-        console.log(e);
-    } finally {
-        await client.close();
-    }
+
 
     return {cars: result};
 }
@@ -670,7 +677,7 @@ exports.getPackages = async function(car_id){
         var doc = {model_year_id: parseInt(car_id)};
         const package = db.collection('package');
         const findPackage = await package.find(doc).toArray();
-        console.log(findPackage);
+        // console.log(findPackage);
         for (var i = 0;i<findPackage.length;i++){
             var tempData = {
                 id:findPackage[i]['package_id'],
@@ -685,7 +692,14 @@ exports.getPackages = async function(car_id){
             for (var j = 0;j<findDetails.length;j++){
                 const parts = db.collection('part');
                 const findParts = await parts.find({part_id:findDetails[j]['part_id']}).toArray();
-                tempData['parts'].push(findParts[0]['part_name']);
+                
+                const doc = {
+                    part_id: findParts[0]['part_id'],
+                    part_name: findParts[0]['part_name'],
+                    part_type_id: findParts[0]['part_type_id']
+                }
+
+                tempData['parts'].push(doc);
             }
 
             result.push(tempData);
@@ -841,8 +855,8 @@ exports.deleteModelYear = async function (id){
         var query = { model_year_id: parseInt(id) };
 
         var packages = await package_collection.find(query).toArray();
-        console.log(packages);
-        console.log(query);
+        // console.log(packages);
+        // console.log(query);
 
         for(let i = 0 ; i < packages.length; i++){
             await package_detail_collection.deleteMany({package_id: packages[i].package_id});
@@ -941,7 +955,7 @@ exports.updateUser = async function(json){
             phone_number: json.phone_number} 
         };
 
-        console.log(hash(json.password));
+        // console.log(hash(json.password));
 
         await collection.updateOne(myquery, newvalues);
         return true;

@@ -18,6 +18,4 @@ images available in /images
         Custom PK error? - for modelyear
         Should we do coalescing deletes or throw errors on select queries
 
-    fix getCarsByProperties w/ enginetypes
-
     Sweep for TODOs
