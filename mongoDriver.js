@@ -109,11 +109,11 @@ exports.addModel = async function(name, brand_id, car_type_id){//good example to
             id = latestRecord.model_id + 1;
             //check brand FK
             if(!(await exists({brand_id: brand_id}, db.collection('brand')))){
-                throw new ForeignKeyError("provided brand does not exist");
+                new ForeignKeyError("provided brand does not exist");
             }
             //check car_type FK
             if(!(await exists({car_type_id: car_type_id}, db.collection('car_type')))){
-                throw new ForeignKeyError("provided car_type does not exist");
+                new ForeignKeyError("provided car_type does not exist");
             }
             doc = {model_id: id, model_name: name, brand_id, car_type_id};
         }
@@ -316,6 +316,7 @@ exports.addOrder = async function(user_id, model_year_id, package_id, date, pack
 exports.getCar = async function(id){
     try{
         await client.connect();
+
         const db = client.db("cars");
         const model_year_collection = db.collection('model_year');
         const model_collection = db.collection('model');
@@ -328,15 +329,15 @@ exports.getCar = async function(id){
 
         query = {model_id : model_year_data.model_id};
         var model_data = await model_collection.findOne(query);
-        if(model_data == null){throw new ForeignKeyError("Model FK not found")}
+        if(model_data == null){new ForeignKeyError("Model FK not found")}
 
         query = {brand_id : model_data.brand_id};
         var brand_data = await brand_collection.findOne(query);
-        if(brand_data == null){throw new ForeignKeyError("Brand FK not found")}
+        if(brand_data == null){new ForeignKeyError("Brand FK not found")}
 
         query = {car_type_id : model_data.car_type_id};
         var car_type_data = await car_type_collection.findOne(query);
-        if(car_type_data == null){throw new ForeignKeyError("Car Type FK not found")}
+        if(car_type_data == null){new ForeignKeyError("Car Type FK not found")}
 
         var tempCar = {
             car_id: model_year_data.model_year_id,
@@ -413,7 +414,9 @@ exports.getCars = async function(){
 
         return findResult;
     } catch (e) {
-        throw new GenericError(e.message);
+        new GenericError(e.message);
+        console.log(e.message);
+        return {error: e.message}
     } finally {
         await client.close();
     }
