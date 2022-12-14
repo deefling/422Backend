@@ -414,8 +414,6 @@ exports.getCars = async function(){
         return findResult;
     } catch (e) {
         throw new GenericError(e.message);
-        console.log(e.message);
-        return {error: e.message}
     } finally {
         await client.close();
     }
